@@ -1,43 +1,80 @@
 package company;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+import contracts.AbstractContract;
+import contracts.SingleVehicleContract;
+import objects.Person;
+import payment.PaymentHandler;
+import payment.PremiumPaymentFrequency;
+import objects.Vehicle;
+import contracts.TravelContract;
+import contracts.MasterVehicleContract;
+
 public class InsuranceCompany {
     private Set<AbstractContract> contracts;
     private PaymentHandler handler;
     private LocalDateTime currentTime;
 
     public InsuranceCompany(LocalDateTime currentTime){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    };
+    public LocalDateTime getCurrentTime(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public LocalDateTime getCurrentTime();
+    public void setCurrentTime(LocalDateTime currentTime){
 
-    public void setCurrentTime(LocalDateTime currentTime);
+    }
 
-    public Set<AbstractContract> getContracts();
+    public Set<AbstractContract> getContracts(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public PaymentHandler getHandler();
+    public PaymentHandler getHandler(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
     public SingleVehicleContract insureVehicle(String contractNumber, Person beneficiary,
                                                Person policyHolder, int proposedPremium,
                                                PremiumPaymentFrequency proposedPaymentFrequency,
-                                               Vehicle vehicleToInsure);
+                                               Vehicle vehicleToInsure){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
     public TravelContract insurePersons(String contractNumber, Person policyHolder, int proposedPremium,
-                         PremiumPaymentFrequency proposedPaymentFrequency, Set<Person> personsToInsure);
+                         PremiumPaymentFrequency proposedPaymentFrequency, Set<Person> personsToInsure){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
     public MasterVehicleContract createMasterVehicleContract(String contractNumber, Person beneficiary,
-                                                             Person policyHolder);
+                                                             Person policyHolder){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
     public void moveSingleVehicleContractToMasterVehicleContract(MasterVehicleContract masterVehicleContract,
-                                                                 SingleVehicleContract singleVehicleContract);
+                                                                 SingleVehicleContract singleVehicleContract){
+        // to do
+    }
 
-    public void chargePremiumsOnContracts();
+    public void chargePremiumsOnContracts(){
+        // to do
+    }
 
-    public void chargePremiumOnContract(MasterVehicleContract contract);
+    public void chargePremiumOnContract(MasterVehicleContract contract){
+        // to do
+    }
 
-    public void chargePremiumOnContract(AbstractContract contract);
+    public void chargePremiumOnContract(AbstractContract contract){
+        // to do
+    }
 
-    public void processClaim(TravelContract travelContract, Set<Person> affectedPersons);
+    public void processClaim(TravelContract travelContract, Set<Person> affectedPersons){
+        // to do
+    }
 
-    public void processClaim(SingleVehicleContract singleVehicleContract, int expectedDamages);
+    public void processClaim(SingleVehicleContract singleVehicleContract, int expectedDamages){
+        // to do
+    }
 }

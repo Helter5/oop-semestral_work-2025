@@ -1,10 +1,15 @@
 package contracts;
 
-public class AbstractContract {
+import company.InsuranceCompany;
+import objects.Person;
+import payment.PaymentHandler;
+import payment.ContractPaymentData;
+
+public abstract class AbstractContract {
     private String contractNumber;
     protected InsuranceCompany  insurer;
     protected Person policyHolder;
-    protected CotnractPaymentData contractPaymentData;
+    protected ContractPaymentData contractPaymentData;
     protected int coverageAmount;
     protected boolean isActive;
 
@@ -12,25 +17,45 @@ public class AbstractContract {
                             Person policyHolder, ContractPaymentData contractPaymentData,
                             int coverageAmount) {
 
-    };
+    }
 
-    public String getContractNumber();
+    public String getContractNumber(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public Person getPolicyHolder();
+    public Person getPolicyHolder(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public InsuranceCompany getInsurer();
+    public InsuranceCompany getInsurer(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public int getCoverageAmount();
+    public int getCoverageAmount(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public boolean isActive();
+    public boolean isActive(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public void setInactive();
+    public void setInactive(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public void setCoverageAmount(int coverageAmount);
+    public void setCoverageAmount(int coverageAmount){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public ContractPaymentData getContractPaymentData();
+    public ContractPaymentData getContractPaymentData(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public void pay(int amount);
+    public void pay(int amount){
 
-    public void updateBalance();
+    }
+
+    public void updateBalance(){
+
+    }
 }

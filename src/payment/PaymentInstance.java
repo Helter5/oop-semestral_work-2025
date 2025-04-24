@@ -1,14 +1,25 @@
 package payment;
 
-public class PaymentInstance {
+import java.time.LocalDateTime;
+
+public class PaymentInstance implements Comparable<PaymentInstance> {
     private LocalDateTime paymentTime;
     private int paymentAmount;
 
     public PaymentInstance(LocalDateTime paymentTime, int paymentAmount){
+        // to do
+    }
 
-    };
+    public LocalDateTime getPaymentTime(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public LocalDateTime getPaymentTime();
+    public int getPaymentAmount(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public int getPaymentAmount();
+    @Override
+    public int compareTo(PaymentInstance other) {
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 }

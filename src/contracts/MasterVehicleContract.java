@@ -1,14 +1,22 @@
 package contracts;
 
-public class MasterVehicleContract {
+import java.util.Set;
+import company.InsuranceCompany;
+import objects.Person;
+
+public class MasterVehicleContract extends AbstractVehicleContract {
     Set<SingleVehicleContract> childContracts;
 
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder){
+        super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
+    }
 
-    };
+    public Set<SingleVehicleContract> getChildContracts(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public Set<SingleVehicleContract> getChildContracts();
-
-    public void requestAdditionOfChildContract(SingleVehicleContract contract);
+    public void requestAdditionOfChildContract(SingleVehicleContract contract){
+        // to do
+    }
 }

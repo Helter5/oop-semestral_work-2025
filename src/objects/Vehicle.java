@@ -6,9 +6,13 @@ public class Vehicle {
 
     public Vehicle(String licensePlate, int originalValue){
 
-    };
+    }
 
-    public String getLicensePlate();
+    public String getLicensePlate(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 
-    public int getOriginalValue();
+    public int getOriginalValue(){
+        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    }
 }

@@ -1,6 +1,8 @@
 package contracts;
 
-public class InvalidContractException {
+public class InvalidContractException extends RuntimeException {
 
-    public InvalidContractException(String message);
+    public InvalidContractException(String message){
+        // to do
+    }
 }
