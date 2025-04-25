@@ -15,43 +15,68 @@ public abstract class AbstractContract {
 
     public AbstractContract(String contractNumber, InsuranceCompany insurer,
                             Person policyHolder, ContractPaymentData contractPaymentData,
-                            int coverageAmount) {
+                            int coverageAmount)
+    {
+        if (contractNumber == null || contractNumber.isEmpty()) {
+            throw new IllegalArgumentException("Contract number can't be null or empty");
+        }
 
+        if (insurer == null) {
+            throw new IllegalArgumentException("Insurer can't be null");
+        }
+
+        if (policyHolder == null) {
+            throw new IllegalArgumentException("Policy holder can't be null");
+        }
+
+        if (coverageAmount < 0) {
+            throw new IllegalArgumentException("Coverage can't be negative value");
+        }
+
+        this.contractNumber = contractNumber;
+        this.insurer = insurer;
+        this.policyHolder = policyHolder;
+        this.contractPaymentData = contractPaymentData;
+        this.coverageAmount = coverageAmount;
+        this.isActive = true;
     }
 
     public String getContractNumber(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return contractNumber;
     }
 
     public Person getPolicyHolder(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return policyHolder;
     }
 
     public InsuranceCompany getInsurer(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return insurer;
     }
 
     public int getCoverageAmount(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return coverageAmount;
     }
 
     public boolean isActive(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return isActive;
     }
 
-    public void setInactive(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    public abstract void setInactive(); // doplnit metody a skontrolovat ci to ma byt abstract
+
+    public void setCoverageAmount(int coverageAmount) {
+        if (coverageAmount < 0) {
+            throw new IllegalArgumentException("Coverage can't be negative value");
+        }
+        this.coverageAmount = coverageAmount;
     }
 
-    public void setCoverageAmount(int coverageAmount){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    public ContractPaymentData getContractPaymentData() {
+        return contractPaymentData;
     }
 
-    public ContractPaymentData getContractPaymentData(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
-    }
+    /* to do */
 
-    public void pay(int amount){
+    public void pay(int amount) {
 
     }
 
