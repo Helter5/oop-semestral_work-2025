@@ -77,7 +77,7 @@ public abstract class AbstractContract {
     /* to do */
 
     public void pay(int amount) {
-
+        
     }
 
     public void updateBalance(){
