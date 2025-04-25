@@ -44,7 +44,7 @@ public class InsuranceCompany {
     }
 
     public TravelContract insurePersons(String contractNumber, Person policyHolder, int proposedPremium,
-                         PremiumPaymentFrequency proposedPaymentFrequency, Set<Person> personsToInsure){
+                                        PremiumPaymentFrequency proposedPaymentFrequency, Set<Person> personsToInsure){
         throw new UnsupportedOperationException("Not implemented yet"); // to do
     }
 

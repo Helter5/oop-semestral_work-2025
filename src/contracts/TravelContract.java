@@ -10,7 +10,7 @@ public class TravelContract extends AbstractContract {
 
     public TravelContract(String contractNumber, InsuranceCompany insurer,
                           Person policyHolder, ContractPaymentData contractPaymentData,
-                          int coverageAmount, Set<Person> personsTolnsure) {
+                          int coverageAmount, Set<Person> personsToInsure) {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
     }
 
