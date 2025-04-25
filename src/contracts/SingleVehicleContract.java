@@ -6,7 +6,7 @@ import company.InsuranceCompany;
 import payment.ContractPaymentData;
 
 public class SingleVehicleContract extends AbstractVehicleContract {
-    private Vehicle insuredVehicle;
+    final private Vehicle insuredVehicle;
 
     public SingleVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder,

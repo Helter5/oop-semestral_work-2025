@@ -3,8 +3,8 @@ package payment;
 import java.time.LocalDateTime;
 
 public class PaymentInstance implements Comparable<PaymentInstance> {
-    private LocalDateTime paymentTime;
-    private int paymentAmount;
+    final private LocalDateTime paymentTime;
+    final private int paymentAmount;
 
     public PaymentInstance(LocalDateTime paymentTime, int paymentAmount){
         // to do

@@ -12,8 +12,8 @@ import contracts.TravelContract;
 import contracts.MasterVehicleContract;
 
 public class InsuranceCompany {
-    private Set<AbstractContract> contracts;
-    private PaymentHandler handler;
+    final private Set<AbstractContract> contracts;
+    final private PaymentHandler handler;
     private LocalDateTime currentTime;
 
     public InsuranceCompany(LocalDateTime currentTime){

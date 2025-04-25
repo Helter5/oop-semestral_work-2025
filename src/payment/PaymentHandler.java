@@ -8,8 +8,8 @@ import contracts.MasterVehicleContract;
 
 
 public class PaymentHandler {
-    private Map<AbstractContract, Set<PaymentInstance>> paymentHistory;
-    private InsuranceCompany insurer;
+    final private Map<AbstractContract, Set<PaymentInstance>> paymentHistory;
+    final private InsuranceCompany insurer;
 
     public PaymentHandler(InsuranceCompany insurer){
 

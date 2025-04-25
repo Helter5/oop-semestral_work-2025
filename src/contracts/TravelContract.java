@@ -6,7 +6,7 @@ import company.InsuranceCompany;
 import payment.ContractPaymentData;
 
 public class TravelContract extends AbstractContract {
-    private Set<Person> insuredPersons;
+    final private Set<Person> insuredPersons;
 
     public TravelContract(String contractNumber, InsuranceCompany insurer,
                           Person policyHolder, ContractPaymentData contractPaymentData,

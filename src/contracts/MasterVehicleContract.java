@@ -5,7 +5,7 @@ import company.InsuranceCompany;
 import objects.Person;
 
 public class MasterVehicleContract extends AbstractVehicleContract {
-    private Set<SingleVehicleContract> childContracts;
+    final private Set<SingleVehicleContract> childContracts;
 
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder){

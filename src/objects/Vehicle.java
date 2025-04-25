@@ -1,8 +1,8 @@
 package objects;
 
 public class Vehicle {
-    private String licensePlate;
-    private int originalValue;
+    final private String licensePlate;
+    final private int originalValue;
 
     public Vehicle(String licensePlate, int originalValue){
 

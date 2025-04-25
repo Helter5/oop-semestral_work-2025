@@ -6,10 +6,10 @@ import payment.PaymentHandler;
 import payment.ContractPaymentData;
 
 public abstract class AbstractContract {
-    private String contractNumber;
-    protected InsuranceCompany  insurer;
-    protected Person policyHolder;
-    protected ContractPaymentData contractPaymentData;
+    final private String contractNumber;
+    final protected InsuranceCompany  insurer;
+    final protected Person policyHolder;
+    final protected ContractPaymentData contractPaymentData;
     protected int coverageAmount;
     protected boolean isActive;
 

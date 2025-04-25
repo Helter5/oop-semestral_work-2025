@@ -5,10 +5,10 @@ import java.util.Set;
 import contracts.AbstractContract;
 
 public class Person {
-    private String id;
-    private LegalForm legalForm;
+    final private String id;
+    final private LegalForm legalForm;
     private int paidOutAmount;
-    private Set<AbstractContract> contracts;
+    final private Set<AbstractContract> contracts;
 
     public Person(String id){
 
