@@ -8,7 +8,8 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     final private Set<SingleVehicleContract> childContracts;
 
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
-                                 Person beneficiary, Person policyHolder){
+                                 Person beneficiary, Person policyHolder)
+    {
         super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
     }
 

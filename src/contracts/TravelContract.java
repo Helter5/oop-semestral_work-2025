@@ -10,11 +10,23 @@ public class TravelContract extends AbstractContract {
 
     public TravelContract(String contractNumber, InsuranceCompany insurer,
                           Person policyHolder, ContractPaymentData contractPaymentData,
-                          int coverageAmount, Set<Person> personsToInsure) {
+                          int coverageAmount, Set<Person> personsToInsure)
+    {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
+
+        if(personsToInsure == null || personsToInsure.isEmpty()) {
+            throw new IllegalArgumentException("Persons To Insure can't be null or empty");
+        }
+
+        if(contractPaymentData == null) {
+            throw new IllegalArgumentException("Contract Payment Data can't be null");
+        }
+
+        this.insuredPersons = Set.copyOf(personsToInsure);
+
     }
 
     public Set<Person> getInsuredPersons(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return insuredPersons;
     }
 }

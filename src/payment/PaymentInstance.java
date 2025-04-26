@@ -7,19 +7,28 @@ public class PaymentInstance implements Comparable<PaymentInstance> {
     final private int paymentAmount;
 
     public PaymentInstance(LocalDateTime paymentTime, int paymentAmount){
-        // to do
+        if (paymentTime == null) {
+            throw new IllegalArgumentException("Payment time can't be null");
+        }
+
+        if (paymentAmount < 0) {
+            throw new IllegalArgumentException("Payment amount has to be positive value");
+        }
+
+        this.paymentTime = paymentTime;
+        this.paymentAmount = paymentAmount;
     }
 
     public LocalDateTime getPaymentTime(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return paymentTime;
     }
 
     public int getPaymentAmount(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return paymentAmount;
     }
 
     @Override
     public int compareTo(PaymentInstance other) {
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return this.paymentTime.compareTo(other.paymentTime);
     }
 }
