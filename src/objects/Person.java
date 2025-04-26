@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import contracts.AbstractContract;
+import static java.lang.Math.pow;
 
 public class Person {
     final private String id;
@@ -32,6 +33,17 @@ public class Person {
     }
 
     // Rodne číslo
+
+    public static boolean isStringNumber(String string) {
+        for(int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean isValidBirthNumber(String birthNumber){
         int birthNumberLength = birthNumber.length();
 
@@ -42,11 +54,8 @@ public class Person {
             return false;
         }
 
-        for(int i = 0; i < birthNumberLength; i++) {
-            char c = birthNumber.charAt(i);
-            if(!Character.isDigit(c)) {
-                return false;
-            }
+        if(!isStringNumber(birthNumber)) {
+            return false;
         }
 
         int year = Integer.parseInt(birthNumber.substring(0, 2));
@@ -57,11 +66,11 @@ public class Person {
             return false;
         }
 
-        if(month > 50) {
+        if (month > 50) {
             month -= 50;
         }
 
-        if(birthNumberLength == 9) {
+        if (birthNumberLength == 9) {
             if(year > 53) {
                 return false;
             }
@@ -76,13 +85,38 @@ public class Person {
             return false;
         }
 
+        if(birthNumberLength == 10) {
+            int sum = 0;
+            for (int i = 0; i < 10; i++) {
+                int digit = birthNumber.charAt(i) - '0';
+                sum += pow(-1, i) * digit;
+            }
 
+            if (sum % 11 != 0) {
+                return false;
+            }
+        }
 
+        return true;
     }
 
     // IČO
     public static boolean isValidRegistrationNumber(String registrationNumber){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        int registrationNumberLength = registrationNumber.length();
+
+        if (registrationNumber == null) {
+            return false;
+        }
+
+        if (registrationNumberLength != 6 || registrationNumberLength != 8) {
+            return false;
+        }
+
+        if(!isStringNumber(registrationNumber)) {
+            return false;
+        }
+
+        return true;
     }
 
     public String getId(){
@@ -102,8 +136,16 @@ public class Person {
     }
 
     public void addContract(AbstractContract contract){
+        if (contract == null) {
+            throw new IllegalArgumentException("Contract can't be null");
+        }
+        contracts.add(contract);
     }
 
     public void payout(int paidOutAmount){
+        if (paidOutAmount < 0) {
+            throw new IllegalArgumentException("Value can't be negative");
+        }
+        this.paidOutAmount += paidOutAmount;
     }
 }
