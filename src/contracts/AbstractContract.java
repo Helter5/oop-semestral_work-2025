@@ -75,9 +75,9 @@ public abstract class AbstractContract {
     }
 
     /* to do */
-
     public void pay(int amount) {
-        
+        PaymentHandler paymentHandler = insurer.getHandler();
+        paymentHandler.pay(this, amount);
     }
 
     public void updateBalance(){

@@ -21,7 +21,7 @@ public class InsuranceCompany {
     }
 
     public LocalDateTime getCurrentTime(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return currentTime;
     }
 
     public void setCurrentTime(LocalDateTime currentTime){
@@ -29,11 +29,11 @@ public class InsuranceCompany {
     }
 
     public Set<AbstractContract> getContracts(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return contracts;
     }
 
     public PaymentHandler getHandler(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return handler;
     }
 
     public SingleVehicleContract insureVehicle(String contractNumber, Person beneficiary,
