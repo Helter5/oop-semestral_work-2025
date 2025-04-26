@@ -6,6 +6,7 @@ import java.util.Set;
 import company.InsuranceCompany;
 import contracts.AbstractContract;
 import contracts.MasterVehicleContract;
+import contracts.InvalidContractException;
 
 
 public class PaymentHandler {
@@ -30,6 +31,24 @@ public class PaymentHandler {
     }
 
     public void pay(AbstractContract contract, int amount){
-        // to do
+        if (contract == null) {
+            throw new IllegalArgumentException("Contract can't be null");
+        }
+
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount has to be positive value");
+        }
+
+        if (!contract.isActive() || !contract.getInsurer().equals(insurer)) {
+            throw new InvalidContractException("The contract is either inactive or does not belong to this insurer");
+        }
+
+        int outstandingBalance = contract.getContractPaymentData().getOutstandingBalance();
+        contract.getContractPaymentData().setOutstandingBalance(outstandingBalance - amount);
+
+
+
+
+
     }
 }
