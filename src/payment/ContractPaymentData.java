@@ -9,39 +9,63 @@ public class ContractPaymentData {
     private int outstandingBalance;
 
     public ContractPaymentData(int premium, PremiumPaymentFrequency premiumPaymentFrequency,
-                               LocalDateTime nextPaymentTime, int outstandingBalance){
+                               LocalDateTime nextPaymentTime, int outstandingBalance)
+    {
+        if (premium < 0) {
+            throw new IllegalArgumentException("Premium value has to be positive");
+        }
 
+        if (premiumPaymentFrequency == null) {
+            throw new IllegalArgumentException("Premium payment frequency can't be null");
+        }
+
+        if (nextPaymentTime == null) {
+            throw new IllegalArgumentException("Next payment time can't be null");
+        }
+
+        this.premium = premium;
+        this.premiumPaymentFrequency = premiumPaymentFrequency;
+        this.nextPaymentTime = nextPaymentTime;
+        this.outstandingBalance = outstandingBalance;
     }
 
     public int getPremium(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return premium;
     }
 
     public void setPremium(int premium){
-        // to do
+        if (premium < 0) {
+            throw new IllegalArgumentException("Premium value has to be positive");
+        }
+        this.premium = premium;
     }
 
     public void setOutstandingBalance(int outstandingBalance){
-        // to do
+        this.outstandingBalance = outstandingBalance;
     }
 
     public int getOutstandingBalance(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return outstandingBalance;
     }
 
     public void setPremiumPaymentFrequency(PremiumPaymentFrequency premiumPaymentFrequency){
-        // to do
+        if (premiumPaymentFrequency == null) {
+            throw new IllegalArgumentException("Premium payment frequency can't be null");
+        }
+        this.premiumPaymentFrequency = premiumPaymentFrequency;
     }
 
     public PremiumPaymentFrequency getPremiumPaymentFrequency(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return premiumPaymentFrequency;
     }
 
     public LocalDateTime getNextPaymentTime(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return nextPaymentTime;
     }
 
     public void updateNextPaymentTime(){
-        // to do
+        // pripočíta počet mesiacov podľa PremiumPaymentFrequency
+        int monthsToAdd = premiumPaymentFrequency.getValueInMonths();
+        this.nextPaymentTime = this.nextPaymentTime.plusMonths(monthsToAdd);
     }
 }

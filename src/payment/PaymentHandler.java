@@ -1,5 +1,6 @@
 package payment;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import company.InsuranceCompany;
@@ -12,7 +13,12 @@ public class PaymentHandler {
     final private InsuranceCompany insurer;
 
     public PaymentHandler(InsuranceCompany insurer){
+        if (insurer == null) {
+            throw new IllegalArgumentException("Insurer can't be null");
+        }
 
+        this.insurer = insurer;
+        this.paymentHistory = new HashMap<>();
     }
 
     public Map<AbstractContract, Set<PaymentInstance>> getPaymentHistory(){

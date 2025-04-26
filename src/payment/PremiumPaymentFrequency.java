@@ -1,9 +1,15 @@
 package payment;
 
 public enum PremiumPaymentFrequency {
-    ANNUAL, SEMI_ANNUAL, QUARTERLY, MONTHLY;
+    ANNUAL(12), SEMI_ANNUAL(6), QUARTERLY(3), MONTHLY(1);
 
-    public int getValueInMonths(){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+    private final int months;
+
+    PremiumPaymentFrequency(int months) {
+        this.months = months;
+    }
+
+    public int getValueInMonths() {
+        return months;
     }
 }
