@@ -50,7 +50,7 @@ public class Person {
         if (birthNumber == null) {
             return false;
         }
-        if (birthNumberLength != 9 || birthNumberLength != 10) {
+        if (birthNumberLength != 9 && birthNumberLength != 10) {
             return false;
         }
 
@@ -108,7 +108,7 @@ public class Person {
             return false;
         }
 
-        if (registrationNumberLength != 6 || registrationNumberLength != 8) {
+        if (registrationNumberLength != 6 && registrationNumberLength != 8) {
             return false;
         }
 

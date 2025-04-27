@@ -55,6 +55,7 @@ public class InsuranceCompany {
                                                Person policyHolder, int proposedPremium,
                                                PremiumPaymentFrequency proposedPaymentFrequency,
                                                Vehicle vehicleToInsure) {
+
         if (contractAlreadyExists(contracts, contractNumber)) {
             throw new IllegalArgumentException("Contract with this number already exists");
         }

@@ -25,6 +25,10 @@ public abstract class AbstractContract {
             throw new IllegalArgumentException("Insurer can't be null");
         }
 
+        if (contractPaymentData == null) {
+            throw new IllegalArgumentException("Contract payment data can't be null");
+        }
+
         if (policyHolder == null) {
             throw new IllegalArgumentException("Policy holder can't be null");
         }
