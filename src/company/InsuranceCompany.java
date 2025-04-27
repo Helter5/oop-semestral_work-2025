@@ -1,6 +1,7 @@
 package company;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import contracts.AbstractContract;
 import contracts.SingleVehicleContract;
@@ -17,7 +18,13 @@ public class InsuranceCompany {
     private LocalDateTime currentTime;
 
     public InsuranceCompany(LocalDateTime currentTime){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        if (currentTime == null) {
+            throw new IllegalArgumentException("Current Time can't be null");
+        }
+
+        this.currentTime = currentTime;
+        this.contracts = new LinkedHashSet<>();
+        this.handler = new PaymentHandler(this);
     }
 
     public LocalDateTime getCurrentTime(){
@@ -25,7 +32,7 @@ public class InsuranceCompany {
     }
 
     public void setCurrentTime(LocalDateTime currentTime){
-
+        this.currentTime = currentTime;
     }
 
     public Set<AbstractContract> getContracts(){
@@ -39,8 +46,13 @@ public class InsuranceCompany {
     public SingleVehicleContract insureVehicle(String contractNumber, Person beneficiary,
                                                Person policyHolder, int proposedPremium,
                                                PremiumPaymentFrequency proposedPaymentFrequency,
-                                               Vehicle vehicleToInsure){
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+                                               Vehicle vehicleToInsure)
+    {
+        for (AbstractContract contract : contracts) {
+            if (contract.getContractNumber().equals(contractNumber)) {
+                throw new IllegalArgumentException("Contract number already exists");
+            }
+        }
     }
 
     public TravelContract insurePersons(String contractNumber, Person policyHolder, int proposedPremium,

@@ -29,4 +29,14 @@ public class TravelContract extends AbstractContract {
     public Set<Person> getInsuredPersons(){
         return insuredPersons;
     }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setInactive() {
+        this.isActive = false;
+    }
 }

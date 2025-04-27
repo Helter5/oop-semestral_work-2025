@@ -29,4 +29,15 @@ public class SingleVehicleContract extends AbstractVehicleContract {
     public Vehicle getInsuredVehicle(){
         return insuredVehicle;
     }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setInactive() {
+        this.isActive = false;
+    }
+
 }

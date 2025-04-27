@@ -57,9 +57,7 @@ public abstract class AbstractContract {
         return coverageAmount;
     }
 
-    public boolean isActive(){
-        return isActive;
-    }
+    public abstract boolean isActive();
 
     public abstract void setInactive(); // doplnit metody a skontrolovat ci to ma byt abstract
 
