@@ -4,6 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import company.InsuranceCompany;
 import objects.Person;
+import payment.ContractPaymentData;
+import payment.PremiumPaymentFrequency;
 
 import static objects.Person.isValidRegistrationNumber;
 
@@ -13,9 +15,10 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder)
     {
-        super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
+        super(contractNumber, insurer, beneficiary, policyHolder,
+                new ContractPaymentData(1, PremiumPaymentFrequency.ANNUAL, insurer.getCurrentTime(), 0), 0);
 
-        if (!isValidRegistrationNumber(beneficiary.getId())) {
+        if (beneficiary != null && !isValidRegistrationNumber(beneficiary.getId())) {
             throw new IllegalArgumentException();
         }
 

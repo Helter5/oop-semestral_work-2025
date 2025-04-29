@@ -73,8 +73,10 @@ public class InsuranceCompany {
         }
 
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
-                proposedPremium, proposedPaymentFrequency, currentTime, 0
+                proposedPremium, proposedPaymentFrequency, currentTime, proposedPremium
         );
+
+        newContractPaymentData.updateNextPaymentTime();
 
         SingleVehicleContract newContract = new SingleVehicleContract(
                 contractNumber, this, beneficiary, policyHolder,
@@ -173,7 +175,7 @@ public class InsuranceCompany {
 
     public void chargePremiumOnContract(AbstractContract contract) {
         ContractPaymentData paymentData = contract.getContractPaymentData();
-        while (!paymentData.getNextPaymentTime().isBefore(currentTime)) {
+        while (paymentData.getNextPaymentTime().isBefore(currentTime)) {
             paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() + paymentData.getPremium());
             paymentData.updateNextPaymentTime();
         }

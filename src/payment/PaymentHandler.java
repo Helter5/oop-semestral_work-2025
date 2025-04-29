@@ -23,7 +23,7 @@ public class PaymentHandler {
     }
 
     public Map<AbstractContract, Set<PaymentInstance>> getPaymentHistory() {
-        throw new UnsupportedOperationException("Not implemented yet"); // to do
+        return paymentHistory;
     }
 
     public void pay(MasterVehicleContract contract, int amount) {
@@ -39,39 +39,65 @@ public class PaymentHandler {
             throw new InvalidContractException("contract exception");
         }
 
+        int originalAmount = amount;
+
+        // Step 1: Pay off outstanding balances for active child contracts
         for (AbstractContract childContract : contract.getChildContracts()) {
+            // Skip inactive contracts
+            if (!childContract.isActive()) continue;
+
             ContractPaymentData paymentData = childContract.getContractPaymentData();
             int outstandingBalance = paymentData.getOutstandingBalance();
 
             if (outstandingBalance > 0) {
-                int payment = Math.min(outstandingBalance, amount);
-                paymentData.setOutstandingBalance(outstandingBalance - payment);
-                amount -= payment;
-
-                if (amount == 0) break;
+                // If we have enough funds to cover the outstanding balance
+                if (amount >= outstandingBalance) {
+                    amount -= outstandingBalance;
+                    paymentData.setOutstandingBalance(0);
+                } else {
+                    // If we don't have enough funds
+                    paymentData.setOutstandingBalance(outstandingBalance - amount);
+                    amount = 0;
+                    break;
+                }
             }
         }
 
+        // Step 2: While we still have funds, apply payments as credit against future premiums
         while (amount > 0) {
-            boolean fundsUsed = false;
+            boolean fundsApplied = false;
 
             for (AbstractContract childContract : contract.getChildContracts()) {
+                // Skip inactive contracts
+                if (!childContract.isActive()) continue;
+
                 ContractPaymentData paymentData = childContract.getContractPaymentData();
                 int premium = paymentData.getPremium();
 
-                int overpayment = Math.min(premium, amount);
-                paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() - overpayment);
-                amount -= overpayment;
-                fundsUsed = true;
+                // Skip contracts with no premium
+                if (premium <= 0) continue;
 
-                if (amount == 0) break;
+                // If we have enough funds to cover the premium
+                if (amount >= premium) {
+                    paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() - premium);
+                    amount -= premium;
+                    fundsApplied = true;
+                } else {
+                    // If we don't have enough funds for the full premium
+                    paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() - amount);
+                    amount = 0;
+                    fundsApplied = true;
+                    break;
+                }
             }
 
-            if (!fundsUsed) break;
+            // If we couldn't apply any funds in this cycle, break out
+            if (!fundsApplied) break;
         }
 
+        // Create payment record with original amount
         LocalDateTime currentTime = insurer.getCurrentTime();
-        PaymentInstance paymentInstance = new PaymentInstance(currentTime, amount);
+        PaymentInstance paymentInstance = new PaymentInstance(currentTime, originalAmount);
 
         paymentHistory.putIfAbsent(contract, new TreeSet<>());
         paymentHistory.get(contract).add(paymentInstance);
