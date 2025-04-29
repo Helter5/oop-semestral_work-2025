@@ -1,5 +1,6 @@
 package payment;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 
 public class ContractPaymentData {
@@ -11,16 +12,16 @@ public class ContractPaymentData {
     public ContractPaymentData(int premium, PremiumPaymentFrequency premiumPaymentFrequency,
                                LocalDateTime nextPaymentTime, int outstandingBalance)
     {
-        if (premium < 0) {
-            throw new IllegalArgumentException("Premium value has to be positive");
+        if (premium <= 0) {
+            throw new IllegalArgumentException();
         }
 
         if (premiumPaymentFrequency == null) {
-            throw new IllegalArgumentException("Premium payment frequency can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (nextPaymentTime == null) {
-            throw new IllegalArgumentException("Next payment time can't be null");
+            throw new IllegalArgumentException();
         }
 
         this.premium = premium;
@@ -34,8 +35,8 @@ public class ContractPaymentData {
     }
 
     public void setPremium(int premium){
-        if (premium < 0) {
-            throw new IllegalArgumentException("Premium value has to be positive");
+        if (premium <= 0) {
+            throw new IllegalArgumentException();
         }
         this.premium = premium;
     }
@@ -50,7 +51,7 @@ public class ContractPaymentData {
 
     public void setPremiumPaymentFrequency(PremiumPaymentFrequency premiumPaymentFrequency){
         if (premiumPaymentFrequency == null) {
-            throw new IllegalArgumentException("Premium payment frequency can't be null");
+            throw new IllegalArgumentException();
         }
         this.premiumPaymentFrequency = premiumPaymentFrequency;
     }
@@ -63,9 +64,7 @@ public class ContractPaymentData {
         return nextPaymentTime;
     }
 
-    public void updateNextPaymentTime(){
-        // pripočíta počet mesiacov podľa PremiumPaymentFrequency
-        int monthsToAdd = premiumPaymentFrequency.getValueInMonths();
-        this.nextPaymentTime = this.nextPaymentTime.plusMonths(monthsToAdd);
+    public void updateNextPaymentTime() {
+        nextPaymentTime = nextPaymentTime.plusMonths(premiumPaymentFrequency.getValueInMonths());
     }
 }

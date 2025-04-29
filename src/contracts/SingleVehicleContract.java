@@ -16,11 +16,11 @@ public class SingleVehicleContract extends AbstractVehicleContract {
         super(contractNumber, insurer, beneficiary, policyHolder, contractPaymentData, coverageAmount);
 
         if (vehicleToInsure == null) {
-            throw new IllegalArgumentException("Vehicle To Insure can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (contractPaymentData == null) {
-            throw new IllegalArgumentException("Contract Payment Data can't be null");
+            throw new IllegalArgumentException();
         }
 
         this.insuredVehicle = vehicleToInsure;
@@ -39,5 +39,4 @@ public class SingleVehicleContract extends AbstractVehicleContract {
     public void setInactive() {
         this.isActive = false;
     }
-
 }

@@ -5,6 +5,8 @@ import objects.Person;
 import payment.PaymentHandler;
 import payment.ContractPaymentData;
 
+import java.util.Objects;
+
 public abstract class AbstractContract {
     final private String contractNumber;
     final protected InsuranceCompany  insurer;
@@ -18,23 +20,23 @@ public abstract class AbstractContract {
                             int coverageAmount)
     {
         if (contractNumber == null || contractNumber.isEmpty()) {
-            throw new IllegalArgumentException("Contract number can't be null or empty");
+            throw new IllegalArgumentException();
         }
 
         if (insurer == null) {
-            throw new IllegalArgumentException("Insurer can't be null");
-        }
-
-        if (contractPaymentData == null) {
-            throw new IllegalArgumentException("Contract payment data can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (policyHolder == null) {
-            throw new IllegalArgumentException("Policy holder can't be null");
+            throw new IllegalArgumentException();
+        }
+
+        if (contractPaymentData == null) {
+            throw new IllegalArgumentException();
         }
 
         if (coverageAmount < 0) {
-            throw new IllegalArgumentException("Coverage can't be negative value");
+            throw new IllegalArgumentException();
         }
 
         this.contractNumber = contractNumber;
@@ -67,7 +69,7 @@ public abstract class AbstractContract {
 
     public void setCoverageAmount(int coverageAmount) {
         if (coverageAmount < 0) {
-            throw new IllegalArgumentException("Coverage can't be negative value");
+            throw new IllegalArgumentException();
         }
         this.coverageAmount = coverageAmount;
     }
@@ -83,6 +85,17 @@ public abstract class AbstractContract {
     }
 
     public void updateBalance(){
+        insurer.chargePremiumOnContract(this);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AbstractContract that)) return false;
+        return Objects.equals(contractNumber, that.contractNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(contractNumber);
     }
 }

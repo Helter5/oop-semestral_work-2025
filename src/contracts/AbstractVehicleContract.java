@@ -13,8 +13,8 @@ public abstract class AbstractVehicleContract extends AbstractContract {
     {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
 
-        if(beneficiary.equals(policyHolder)) {
-            throw new IllegalArgumentException("Beneficiary can't be same as Policy holder");
+        if (beneficiary != null && policyHolder != null && beneficiary.equals(policyHolder)) {
+            throw new IllegalArgumentException();
         }
 
         this.beneficiary = beneficiary;

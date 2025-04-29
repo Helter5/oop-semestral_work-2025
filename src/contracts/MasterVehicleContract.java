@@ -15,8 +15,8 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     {
         super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
 
-        if(!isValidRegistrationNumber(policyHolder.getId())) {
-            throw new IllegalArgumentException("Insurer can be only customer with valid IČO");
+        if (!isValidRegistrationNumber(beneficiary.getId())) {
+            throw new IllegalArgumentException();
         }
 
         this.childContracts = new LinkedHashSet<>();
@@ -53,6 +53,15 @@ public class MasterVehicleContract extends AbstractVehicleContract {
         }
 
         this.isActive = false;
+    }
 
+    @Override
+    public void pay(int amount) {
+        insurer.getHandler().pay(this, amount);
+    }
+
+    @Override
+    public void updateBalance() {
+        insurer.chargePremiumOnContract(this);
     }
 }

@@ -1,27 +1,29 @@
 package objects;
 
+import java.util.Objects;
+
 public class Vehicle {
     final private String licensePlate;
     final private int originalValue;
 
     public Vehicle(String licensePlate, int originalValue){
         if (licensePlate == null) {
-            throw new IllegalArgumentException("License plate can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (licensePlate.length() != 7) {
-            throw new IllegalArgumentException("Length of the license plate has to be 7");
+            throw new IllegalArgumentException();
         }
 
         for(int i = 0; i < licensePlate.length(); i++) {
             char c = licensePlate.charAt(i);
             if(!((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
-                throw new IllegalArgumentException("License plate must contain only characters A-Z and numbers 0-9");
+                throw new IllegalArgumentException();
             }
         }
 
-        if (originalValue < 0) {
-            throw new IllegalArgumentException("Original value must be positive");
+        if (originalValue <= 0) {
+            throw new IllegalArgumentException();
         }
 
         this.licensePlate = licensePlate;
@@ -35,5 +37,16 @@ public class Vehicle {
 
     public int getOriginalValue(){
         return originalValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Vehicle vehicle)) return false;
+        return Objects.equals(licensePlate, vehicle.licensePlate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(licensePlate);
     }
 }

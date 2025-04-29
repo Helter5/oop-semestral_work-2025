@@ -18,7 +18,7 @@ public class InsuranceCompany {
 
     public InsuranceCompany(LocalDateTime currentTime) {
         if (currentTime == null) {
-            throw new IllegalArgumentException("Current Time can't be null");
+            throw new IllegalArgumentException();
         }
 
         this.currentTime = currentTime;
@@ -31,6 +31,9 @@ public class InsuranceCompany {
     }
 
     public void setCurrentTime(LocalDateTime currentTime) {
+        if (currentTime == null) {
+            throw new IllegalArgumentException();
+        }
         this.currentTime = currentTime;
     }
 
@@ -56,11 +59,16 @@ public class InsuranceCompany {
                                                PremiumPaymentFrequency proposedPaymentFrequency,
                                                Vehicle vehicleToInsure) {
 
+        if (vehicleToInsure == null || proposedPaymentFrequency == null || proposedPremium <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         if (contractAlreadyExists(contracts, contractNumber)) {
             throw new IllegalArgumentException("Contract with this number already exists");
         }
 
-        if (proposedPremium < 0.02 * vehicleToInsure.getOriginalValue()) {
+        double totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
+        if ( totalPremiumValue < vehicleToInsure.getOriginalValue() * 0.02) {
             throw new IllegalArgumentException("Proposed premium is too low");
         }
 
@@ -81,12 +89,17 @@ public class InsuranceCompany {
 
     public TravelContract insurePersons(String contractNumber, Person policyHolder, int proposedPremium,
                                         PremiumPaymentFrequency proposedPaymentFrequency, Set<Person> personsToInsure) {
+
+        if (personsToInsure == null || personsToInsure.isEmpty() || proposedPaymentFrequency == null || proposedPremium <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         if (contractAlreadyExists(contracts, contractNumber)) {
-            throw new IllegalArgumentException("Contract with this number already exists");
+            throw new IllegalArgumentException();
         }
 
         if (proposedPremium < 5 * personsToInsure.size()) {
-            throw new IllegalArgumentException("Proposed premium is too low");
+            throw new IllegalArgumentException();
         }
 
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
@@ -95,7 +108,7 @@ public class InsuranceCompany {
 
         TravelContract newContract = new TravelContract(
                 contractNumber, this, policyHolder,
-                newContractPaymentData, 10 * proposedPremium, personsToInsure
+                newContractPaymentData, 10 * personsToInsure.size(), personsToInsure
         );
 
         chargePremiumOnContract(newContract);
@@ -107,7 +120,7 @@ public class InsuranceCompany {
     public MasterVehicleContract createMasterVehicleContract(String contractNumber, Person beneficiary,
                                                              Person policyHolder) {
         if (contractAlreadyExists(contracts, contractNumber)) {
-            throw new IllegalArgumentException("Contract with this number already exists");
+            throw new IllegalArgumentException();
         }
 
         MasterVehicleContract newContract = new MasterVehicleContract(
@@ -122,19 +135,19 @@ public class InsuranceCompany {
     public void moveSingleVehicleContractToMasterVehicleContract(MasterVehicleContract masterVehicleContract,
                                                                  SingleVehicleContract singleVehicleContract) {
         if (masterVehicleContract == null || singleVehicleContract == null) {
-            throw new IllegalArgumentException("Contracts can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (!masterVehicleContract.isActive() || !singleVehicleContract.isActive()) {
-            throw new InvalidContractException("Contracts must be active");
+            throw new InvalidContractException("contract exception");
         }
 
         if (!masterVehicleContract.getInsurer().equals(singleVehicleContract.getInsurer())) {
-            throw new InvalidContractException("Contracts must be from the same insurer");
+            throw new InvalidContractException("contract exception");
         }
 
         if (!masterVehicleContract.getPolicyHolder().equals(singleVehicleContract.getPolicyHolder())) {
-            throw new InvalidContractException("Contracts must have the same policy holder");
+            throw new InvalidContractException("contract exception");
         }
 
         contracts.remove(singleVehicleContract);
@@ -168,19 +181,19 @@ public class InsuranceCompany {
 
     public void processClaim(TravelContract travelContract, Set<Person> affectedPersons) {
         if (travelContract == null) {
-            throw new IllegalArgumentException("Contract can't be null");
+            throw new IllegalArgumentException();
         }
 
         if (affectedPersons == null || affectedPersons.isEmpty()) {
-            throw new IllegalArgumentException("Affected persons can't be null or empty");
+            throw new IllegalArgumentException();
         }
 
         if (!travelContract.getInsuredPersons().containsAll(affectedPersons)) {
-            throw new IllegalArgumentException("Affected persons must be insured");
+            throw new IllegalArgumentException();
         }
 
         if (!travelContract.isActive()) {
-            throw new InvalidContractException("Contract must be active");
+            throw new InvalidContractException("contract exception");
         }
 
         int totalClaimAmount =  travelContract.getCoverageAmount() / affectedPersons.size();
@@ -193,15 +206,15 @@ public class InsuranceCompany {
 
     public void processClaim(SingleVehicleContract singleVehicleContract, int expectedDamages) {
         if (singleVehicleContract == null) {
-            throw new IllegalArgumentException("Contract can't be null");
+            throw new IllegalArgumentException();
         }
 
-        if (expectedDamages < 0) {
-            throw new IllegalArgumentException("Expected damages can't be negative");
+        if (expectedDamages <= 0) {
+            throw new IllegalArgumentException();
         }
 
         if (!singleVehicleContract.isActive()) {
-            throw new InvalidContractException("Contract must be active");
+            throw new InvalidContractException("contract exception");
         }
 
         if (singleVehicleContract.getInsurer() != null) {

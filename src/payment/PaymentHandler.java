@@ -15,7 +15,7 @@ public class PaymentHandler {
 
     public PaymentHandler(InsuranceCompany insurer) {
         if (insurer == null) {
-            throw new IllegalArgumentException("Insurer can't be null");
+            throw new IllegalArgumentException();
         }
 
         this.insurer = insurer;
@@ -28,15 +28,15 @@ public class PaymentHandler {
 
     public void pay(MasterVehicleContract contract, int amount) {
         if (contract == null) {
-            throw new IllegalArgumentException("Contract can't be null");
+            throw new IllegalArgumentException();
         }
 
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount has to be positive");
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
         }
 
         if (!contract.isActive() || !contract.getInsurer().equals(insurer) || contract.getChildContracts().isEmpty()) {
-            throw new InvalidContractException("The contract is either inactive, doesn't belong to this insurer, or has no child contracts");
+            throw new InvalidContractException("contract exception");
         }
 
         for (AbstractContract childContract : contract.getChildContracts()) {
@@ -79,15 +79,15 @@ public class PaymentHandler {
 
     public void pay(AbstractContract contract, int amount) {
         if (contract == null) {
-            throw new IllegalArgumentException("Contract can't be null");
+            throw new IllegalArgumentException();
         }
 
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount has to be positive value");
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
         }
 
         if (!contract.isActive() || !contract.getInsurer().equals(insurer)) {
-            throw new InvalidContractException("The contract is either inactive or does not belong to this insurer");
+            throw new InvalidContractException("contract exception");
         }
 
         int outstandingBalance = contract.getContractPaymentData().getOutstandingBalance();

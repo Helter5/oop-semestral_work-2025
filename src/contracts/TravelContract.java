@@ -5,6 +5,8 @@ import java.util.Set;
 import company.InsuranceCompany;
 import payment.ContractPaymentData;
 
+import static objects.Person.isValidBirthNumber;
+
 public class TravelContract extends AbstractContract {
     final private Set<Person> insuredPersons;
 
@@ -14,12 +16,18 @@ public class TravelContract extends AbstractContract {
     {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
 
-        if(personsToInsure == null || personsToInsure.isEmpty()) {
-            throw new IllegalArgumentException("Persons To Insure can't be null or empty");
+        if (personsToInsure == null || personsToInsure.isEmpty()) {
+            throw new IllegalArgumentException();
         }
 
-        if(contractPaymentData == null) {
-            throw new IllegalArgumentException("Contract Payment Data can't be null");
+        if (contractPaymentData == null) {
+            throw new IllegalArgumentException();
+        }
+
+        for (Person person : personsToInsure) {
+            if(!isValidBirthNumber(person.toString())) {
+                throw new IllegalArgumentException();
+            }
         }
 
         this.insuredPersons = Set.copyOf(personsToInsure);
