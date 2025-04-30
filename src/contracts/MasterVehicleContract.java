@@ -3,6 +3,7 @@ package contracts;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import company.InsuranceCompany;
+import objects.LegalForm;
 import objects.Person;
 import payment.ContractPaymentData;
 import payment.PremiumPaymentFrequency;
@@ -15,10 +16,9 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder)
     {
-        super(contractNumber, insurer, beneficiary, policyHolder,
-                new ContractPaymentData(1, PremiumPaymentFrequency.ANNUAL, insurer.getCurrentTime(), 0), 0);
+        super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
 
-        if (beneficiary != null && !isValidRegistrationNumber(beneficiary.getId())) {
+        if (policyHolder.getLegalForm() != LegalForm.LEGAL) {
             throw new IllegalArgumentException();
         }
 
@@ -30,7 +30,6 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     }
 
     public void requestAdditionOfChildContract(SingleVehicleContract contract){
-        insurer.moveSingleVehicleContractToMasterVehicleContract(this, contract);
         childContracts.add(contract);
     }
 

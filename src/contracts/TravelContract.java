@@ -25,7 +25,7 @@ public class TravelContract extends AbstractContract {
         }
 
         for (Person person : personsToInsure) {
-            if(!isValidBirthNumber(person.toString())) {
+            if(!isValidBirthNumber(person.getId())) {
                 throw new IllegalArgumentException();
             }
         }

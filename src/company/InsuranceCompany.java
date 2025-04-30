@@ -219,12 +219,13 @@ public class InsuranceCompany {
             throw new InvalidContractException("contract exception");
         }
 
-        if (singleVehicleContract.getInsurer() != null) {
-            singleVehicleContract.pay(expectedDamages);
-        } else {
-            Person policyHolder = singleVehicleContract.getPolicyHolder();
-            policyHolder.payout(expectedDamages);
+        int payoutAmount = singleVehicleContract.getCoverageAmount();
+        Person payoutTarget = singleVehicleContract.getBeneficiary();
+
+        if (payoutTarget == null) {
+            payoutTarget = singleVehicleContract.getPolicyHolder();
         }
+        payoutTarget.payout(payoutAmount);
 
         if (expectedDamages >= 0.7 * singleVehicleContract.getInsuredVehicle().getOriginalValue()) {
             singleVehicleContract.setInactive();

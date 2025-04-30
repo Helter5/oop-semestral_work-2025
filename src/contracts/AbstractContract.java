@@ -31,9 +31,9 @@ public abstract class AbstractContract {
             throw new IllegalArgumentException();
         }
 
-        if (contractPaymentData == null) {
-            throw new IllegalArgumentException();
-        }
+        //if (contractPaymentData == null) {
+        //    throw new IllegalArgumentException();
+        //}
 
         if (coverageAmount < 0) {
             throw new IllegalArgumentException();

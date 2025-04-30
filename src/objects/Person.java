@@ -20,7 +20,7 @@ public class Person {
             throw new IllegalArgumentException();
         }
 
-        if(isValidBirthNumber(id)) {
+        if (isValidBirthNumber(id)) {
             this.legalForm = LegalForm.NATURAL;
         } else if (isValidRegistrationNumber(id)) {
             this.legalForm = LegalForm.LEGAL;
