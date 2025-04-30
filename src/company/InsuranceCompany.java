@@ -53,7 +53,7 @@ public class InsuranceCompany {
         }
         return false;
     }
-
+        // zaokruhlit dole
     public SingleVehicleContract insureVehicle(String contractNumber, Person beneficiary,
                                                Person policyHolder, int proposedPremium,
                                                PremiumPaymentFrequency proposedPaymentFrequency,
@@ -168,14 +168,14 @@ public class InsuranceCompany {
     }
 
     public void chargePremiumOnContract(MasterVehicleContract contract) {
-        for (AbstractContract childContract : contract.getChildContracts()) {
+        for (AbstractVehicleContract childContract : contract.getChildContracts()) {
             chargePremiumOnContract(childContract);
         }
     }
 
     public void chargePremiumOnContract(AbstractContract contract) {
         ContractPaymentData paymentData = contract.getContractPaymentData();
-        while (paymentData.getNextPaymentTime().isBefore(currentTime)) {
+        while (paymentData.getNextPaymentTime().isBefore(currentTime) || paymentData.getNextPaymentTime().isEqual(currentTime)) {
             paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() + paymentData.getPremium());
             paymentData.updateNextPaymentTime();
         }

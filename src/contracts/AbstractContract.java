@@ -90,12 +90,14 @@ public abstract class AbstractContract {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof AbstractContract that)) return false;
-        return Objects.equals(contractNumber, that.contractNumber);
+        return Objects.equals(contractNumber, that.contractNumber) &&
+                Objects.equals(insurer, that.insurer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(contractNumber);
+        return Objects.hash(contractNumber, insurer);
     }
 }
