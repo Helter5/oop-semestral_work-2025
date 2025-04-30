@@ -67,7 +67,7 @@ public class InsuranceCompany {
             throw new IllegalArgumentException("Contract with this number already exists");
         }
 
-        double totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
+        double totalPremiumValue = proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths());
         if ( totalPremiumValue < vehicleToInsure.getOriginalValue() * 0.02) {
             throw new IllegalArgumentException();
         }
@@ -100,7 +100,7 @@ public class InsuranceCompany {
             throw new IllegalArgumentException();
         }
 
-        double totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
+        double totalPremiumValue = proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths());
         if (totalPremiumValue < 5 * personsToInsure.size()) {
             throw new IllegalArgumentException();
         }

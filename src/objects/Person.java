@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import contracts.AbstractContract;
-import static java.lang.Math.pow;
 
 public class Person {
     final private String id;
@@ -90,13 +89,12 @@ public class Person {
             int sum = 0;
             for (int i = 0; i < 10; i++) {
                 int digit = birthNumber.charAt(i) - '0';
-                sum += pow(-1, i) * digit;
+                //sum += pow(-1, i) * digit;
+                sum += ((i % 2 == 0) ? 1 : -1) * digit;
                 //sum += (i % 2 == 0 ? 1 : -1) * digit;
             }
 
-            if (sum % 11 != 0) {
-                return false;
-            }
+            return sum % 11 == 0;
         }
 
         return true;
@@ -149,8 +147,7 @@ public class Person {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Person)) return false;
-        Person person = (Person) o;
+        if (!(o instanceof Person person)) return false;
         return Objects.equals(id, person.id);
     }
 
