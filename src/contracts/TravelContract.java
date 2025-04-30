@@ -30,7 +30,7 @@ public class TravelContract extends AbstractContract {
             }
         }
 
-        this.insuredPersons = Set.copyOf(personsToInsure);
+        this.insuredPersons = personsToInsure;
 
     }
 

@@ -91,6 +91,7 @@ public class Person {
             for (int i = 0; i < 10; i++) {
                 int digit = birthNumber.charAt(i) - '0';
                 sum += pow(-1, i) * digit;
+                //sum += (i % 2 == 0 ? 1 : -1) * digit;
             }
 
             if (sum % 11 != 0) {

@@ -36,6 +36,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     @Override
     public boolean isActive() {
         if (childContracts.isEmpty()) {
+            this.isActive = true;
             return isActive;
         }
 
@@ -59,6 +60,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
 
     @Override
     public void pay(int amount) {
+        // chyba pri zadani - viz. discord
         insurer.getHandler().pay(this, amount);
     }
 

@@ -69,7 +69,7 @@ public class InsuranceCompany {
 
         double totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
         if ( totalPremiumValue < vehicleToInsure.getOriginalValue() * 0.02) {
-            throw new IllegalArgumentException("Proposed premium is too low");
+            throw new IllegalArgumentException();
         }
 
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
@@ -100,7 +100,8 @@ public class InsuranceCompany {
             throw new IllegalArgumentException();
         }
 
-        if (proposedPremium < 5 * personsToInsure.size()) {
+        double totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
+        if (totalPremiumValue < 5 * personsToInsure.size()) {
             throw new IllegalArgumentException();
         }
 
