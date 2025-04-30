@@ -5,10 +5,6 @@ import java.util.Set;
 import company.InsuranceCompany;
 import objects.LegalForm;
 import objects.Person;
-import payment.ContractPaymentData;
-import payment.PremiumPaymentFrequency;
-
-import static objects.Person.isValidRegistrationNumber;
 
 public class MasterVehicleContract extends AbstractVehicleContract {
     final private Set<SingleVehicleContract> childContracts;

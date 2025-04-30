@@ -41,6 +41,20 @@ public class Vehicle {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vehicle)) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return Objects.equals(licensePlate, vehicle.licensePlate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(licensePlate);
+    }
+
+    /*
+    @Override
+    public boolean equals(Object o) {
         if (!(o instanceof Vehicle vehicle)) return false;
         return Objects.equals(licensePlate, vehicle.licensePlate);
     }
@@ -49,4 +63,5 @@ public class Vehicle {
     public int hashCode() {
         return Objects.hashCode(licensePlate);
     }
+     */
 }

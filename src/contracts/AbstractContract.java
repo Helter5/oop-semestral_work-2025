@@ -65,7 +65,7 @@ public abstract class AbstractContract {
 
     public abstract boolean isActive();
 
-    public abstract void setInactive(); // doplnit metody a skontrolovat ci to ma byt abstract
+    public abstract void setInactive();
 
     public void setCoverageAmount(int coverageAmount) {
         if (coverageAmount < 0) {
