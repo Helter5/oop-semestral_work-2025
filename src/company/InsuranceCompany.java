@@ -53,7 +53,7 @@ public class InsuranceCompany {
         }
         return false;
     }
-        // zaokruhlit dole
+
     public SingleVehicleContract insureVehicle(String contractNumber, Person beneficiary,
                                                Person policyHolder, int proposedPremium,
                                                PremiumPaymentFrequency proposedPaymentFrequency,

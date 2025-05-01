@@ -13,6 +13,7 @@ public class SingleVehicleContract extends AbstractVehicleContract {
                                  ContractPaymentData contractPaymentData, int coverageAmount,
                                  Vehicle vehicleToInsure)
     {
+
         super(contractNumber, insurer, beneficiary, policyHolder, contractPaymentData, coverageAmount);
 
         if (vehicleToInsure == null) {
