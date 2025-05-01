@@ -7,6 +7,7 @@ import objects.Vehicle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import payment.ContractPaymentData;
+import payment.PaymentInstance;
 import payment.PremiumPaymentFrequency;
 
 import java.time.LocalDateTime;
@@ -159,7 +160,7 @@ class MasterVehicleContractTest {
 
         // Set master contract inactive
         masterContract.setInactive();
-        assertTrue(masterContract.isActive()); // Should be inactive
+        assertFalse(masterContract.isActive()); // Should be inactive
     }
 
     @Test
@@ -238,6 +239,16 @@ class MasterVehicleContractTest {
         MasterVehicleContract masterContract = new MasterVehicleContract(
                 "MC001", company, beneficiary, legalPerson);
 
+        // Create and add a child contract
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+        SingleVehicleContract childContract = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        // Add child contract to master contract
+        masterContract.requestAdditionOfChildContract(childContract);
+
         // Add the contract to the insurance company
         company.getContracts().add(masterContract);
 
@@ -263,6 +274,19 @@ class MasterVehicleContractTest {
 
         // Test with zero amount - should be rejected
         assertThrows(IllegalArgumentException.class, () -> masterContract.pay(0));
+    }
+
+    @Test
+    void testPayWithEmptyMasterContract() {
+        // Create a master contract with no child contracts
+        MasterVehicleContract emptyMasterContract = new MasterVehicleContract(
+                "MC002", company, beneficiary, legalPerson);
+
+        // Add the contract to the insurance company
+        company.getContracts().add(emptyMasterContract);
+
+        // Attempt to pay should throw InvalidContractException
+        assertThrows(InvalidContractException.class, () -> emptyMasterContract.pay(100));
     }
 
     @Test
@@ -294,5 +318,215 @@ class MasterVehicleContractTest {
         } catch (Exception e) {
             fail("updateBalance threw an exception: " + e.getMessage());
         }
+    }
+
+    @Test
+    void testPayWithInactiveContract() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Add child contract to make it valid for payment
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+        SingleVehicleContract childContract = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        masterContract.requestAdditionOfChildContract(childContract);
+        company.getContracts().add(masterContract);
+
+        // Make contract inactive
+        masterContract.setInactive();
+
+        // Attempt to pay should throw InvalidContractException
+        assertThrows(InvalidContractException.class, () -> masterContract.pay(100));
+    }
+
+    @Test
+    void testPayWithDifferentInsurer() {
+        // Create a contract with a different insurer
+        InsuranceCompany differentCompany = new InsuranceCompany(LocalDateTime.now());
+
+        MasterVehicleContract foreignContract = new MasterVehicleContract(
+                "MC001", differentCompany, beneficiary, legalPerson);
+
+        // Add child contract to make it valid for payment
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+        SingleVehicleContract childContract = new SingleVehicleContract(
+                "SC001", differentCompany, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        foreignContract.requestAdditionOfChildContract(childContract);
+
+        // Add the contract to the different company
+        differentCompany.getContracts().add(foreignContract);
+
+        // Try to pay using our company's handler - should throw exception
+        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(foreignContract, 100));
+    }
+
+    @Test
+    void testPayWithNoChildContracts() {
+        // Create a master contract with no child contracts
+        MasterVehicleContract emptyMasterContract = new MasterVehicleContract(
+                "MC002", company, beneficiary, legalPerson);
+
+        // Add the contract to the insurance company
+        company.getContracts().add(emptyMasterContract);
+
+        // Attempt to pay should throw InvalidContractException
+        assertThrows(InvalidContractException.class, () -> emptyMasterContract.pay(100));
+    }
+
+    @Test
+    void testAbstractContractPayWithNullContract() {
+        // Test with null contract
+        assertThrows(IllegalArgumentException.class, () ->
+                company.getHandler().pay((AbstractContract)null, 100));
+    }
+
+    @Test
+    void testAbstractContractPayWithZeroAmount() {
+        // Create a contract
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
+        SingleVehicleContract contract = new SingleVehicleContract(
+                "SC001", company, beneficiary, naturalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(contract);
+
+        // Test with zero amount
+        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract, 0));
+    }
+
+    @Test
+    void testAbstractContractPayWithNegativeAmount() {
+        // Create a contract
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
+        SingleVehicleContract contract = new SingleVehicleContract(
+                "SC001", company, beneficiary, naturalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(contract);
+
+        // Test with negative amount
+        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract, -100));
+    }
+
+    @Test
+    void testAbstractContractPayWithInactiveContract() {
+        // Create a contract and make it inactive
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
+        SingleVehicleContract contract = new SingleVehicleContract(
+                "SC001", company, beneficiary, naturalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(contract);
+        contract.setInactive();
+
+        // Test with inactive contract
+        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(contract, 100));
+    }
+
+    @Test
+    void testAbstractContractPayWithDifferentInsurer() {
+        // Create a contract with different insurer
+        InsuranceCompany differentCompany = new InsuranceCompany(LocalDateTime.now());
+
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
+        SingleVehicleContract contract = new SingleVehicleContract(
+                "SC001", differentCompany, beneficiary, naturalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        differentCompany.getContracts().add(contract);
+
+        // Test with contract from different insurer
+        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(contract, 100));
+    }
+
+    @Test
+    void testAbstractContractPaySuccessfully() {
+        // Create a contract
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
+        SingleVehicleContract contract = new SingleVehicleContract(
+                "SC001", company, beneficiary, naturalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(contract);
+
+        // Initial state
+        assertEquals(200, contract.getContractPaymentData().getOutstandingBalance());
+        assertTrue(company.getHandler().getPaymentHistory().isEmpty());
+
+        // Make payment
+        contract.pay(150);
+
+        // Verify payment was processed
+        assertEquals(50, contract.getContractPaymentData().getOutstandingBalance());
+        assertFalse(company.getHandler().getPaymentHistory().isEmpty());
+        assertTrue(company.getHandler().getPaymentHistory().containsKey(contract));
+
+        // Verify payment details
+        PaymentInstance payment = company.getHandler().getPaymentHistory().get(contract).iterator().next();
+        assertEquals(150, payment.getPaymentAmount());
+        assertEquals(company.getCurrentTime(), payment.getPaymentTime());
+    }
+
+    @Test
+    void testSetInactiveCorrectImplementation() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Create two SingleVehicleContracts
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+
+        SingleVehicleContract contract1 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        SingleVehicleContract contract2 = new SingleVehicleContract(
+                "SC002", company, beneficiary, legalPerson,
+                paymentData, 6000, new Vehicle("DEF4567", 12000));
+
+        // Add contracts to master contract
+        masterContract.requestAdditionOfChildContract(contract1);
+        masterContract.requestAdditionOfChildContract(contract2);
+
+        // Initially all contracts should be active
+        assertTrue(masterContract.isActive());
+        assertTrue(contract1.isActive());
+        assertTrue(contract2.isActive());
+
+        // Call setInactive on the master contract
+        masterContract.setInactive();
+
+        // Verify that all child contracts are now inactive
+        assertFalse(contract1.isActive());
+        assertFalse(contract2.isActive());
+
+        // Get the isActive field using reflection to verify internal state
+        boolean isActiveMaster = false;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            isActiveMaster = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+
+        // Verify that the master contract's isActive attribute is false
+        assertFalse(isActiveMaster);
+
+        // And verify that the isActive() method returns false
+        assertFalse(masterContract.isActive());
     }
 }

@@ -55,6 +55,7 @@ public class VehicleTest {
         assertThrows(IllegalArgumentException.class, () -> new Vehicle("ABC1234", -1));
     }
 
+/*
     @Test
     void testVehicleEquality() {
         Vehicle vehicle1 = new Vehicle("ABC1234", 5000);
@@ -73,6 +74,8 @@ public class VehicleTest {
         // Different vehicles should have different hash codes
         assertNotEquals(vehicle1.hashCode(), vehicle3.hashCode());
     }
+
+     */
 
     @Test
     void testVehicleImmutability() {

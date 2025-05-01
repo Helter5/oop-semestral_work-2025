@@ -32,7 +32,6 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     @Override
     public boolean isActive() {
         if (childContracts.isEmpty()) {
-            this.isActive = true;
             return isActive;
         }
 
@@ -51,7 +50,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
             contract.setInactive();
         }
 
-        this.isActive = false;
+        super.isActive = false;
     }
 
     @Override
