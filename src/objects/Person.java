@@ -144,6 +144,7 @@ public class Person {
         this.paidOutAmount += paidOutAmount;
     }
 
+    /*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -155,4 +156,5 @@ public class Person {
     public int hashCode() {
         return Objects.hash(id);
     }
+     */
 }

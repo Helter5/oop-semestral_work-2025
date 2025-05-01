@@ -28,6 +28,7 @@ public class PaymentInstance implements Comparable<PaymentInstance> {
         return paymentAmount;
     }
 
+    /*
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof PaymentInstance that)) return false;
@@ -38,6 +39,9 @@ public class PaymentInstance implements Comparable<PaymentInstance> {
     public int hashCode() {
         return Objects.hash(paymentTime, paymentAmount);
     }
+
+     */
+
 
     @Override
     public int compareTo(PaymentInstance other) {

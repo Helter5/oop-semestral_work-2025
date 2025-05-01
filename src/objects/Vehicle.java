@@ -38,7 +38,7 @@ public class Vehicle {
     public int getOriginalValue(){
         return originalValue;
     }
-
+    /*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,4 +50,5 @@ public class Vehicle {
     public int hashCode() {
         return Objects.hashCode(licensePlate);
     }
+     */
 }
