@@ -19,32 +19,33 @@ public abstract class AbstractContract {
                             Person policyHolder, ContractPaymentData contractPaymentData,
                             int coverageAmount)
     {
-        if (contractNumber == null || contractNumber.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (insurer == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (policyHolder == null) {
-            throw new IllegalArgumentException();
-        }
+        if (insurer == null) throw new IllegalArgumentException();
+        if (policyHolder == null) throw new IllegalArgumentException();
 
         //if (contractPaymentData == null) {
         //    throw new IllegalArgumentException();
         //}
 
-        if (coverageAmount < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        this.contractNumber = contractNumber;
+        this.contractNumber = validateContractNumber(contractNumber);
         this.insurer = insurer;
         this.policyHolder = policyHolder;
         this.contractPaymentData = contractPaymentData;
-        this.coverageAmount = coverageAmount;
+        this.coverageAmount = validateCoverageAmount(coverageAmount);
         this.isActive = true;
+    }
+
+    private String validateContractNumber(String contractNumber) {
+        if (contractNumber == null || contractNumber.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return contractNumber;
+    }
+
+    private int validateCoverageAmount(int coverageAmount) {
+        if (coverageAmount < 0) {
+            throw new IllegalArgumentException();
+        }
+        return coverageAmount;
     }
 
     public String getContractNumber(){
@@ -68,9 +69,7 @@ public abstract class AbstractContract {
     public abstract void setInactive();
 
     public void setCoverageAmount(int coverageAmount) {
-        if (coverageAmount < 0) {
-            throw new IllegalArgumentException();
-        }
+        validateCoverageAmount(coverageAmount);
         this.coverageAmount = coverageAmount;
     }
 

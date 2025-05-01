@@ -13,12 +13,15 @@ public class MasterVehicleContract extends AbstractVehicleContract {
                                  Person beneficiary, Person policyHolder)
     {
         super(contractNumber, insurer, beneficiary, policyHolder, null, 0);
+        validatePolicyHolderLegalForm(policyHolder);
 
+        this.childContracts = new LinkedHashSet<>();
+    }
+
+    private void validatePolicyHolderLegalForm(Person policyHolder) {
         if (policyHolder.getLegalForm() != LegalForm.LEGAL) {
             throw new IllegalArgumentException();
         }
-
-        this.childContracts = new LinkedHashSet<>();
     }
 
     public Set<SingleVehicleContract> getChildContracts(){
@@ -31,26 +34,14 @@ public class MasterVehicleContract extends AbstractVehicleContract {
 
     @Override
     public boolean isActive() {
-        if (childContracts.isEmpty()) {
-            return isActive;
-        }
-
-        for (SingleVehicleContract contract : childContracts) {
-            if (contract.isActive()) {
-                return true;
-            }
-        }
-
-        return false;
+        return childContracts.isEmpty() ?
+                isActive : childContracts.stream().anyMatch(SingleVehicleContract::isActive);
     }
 
     @Override
     public void setInactive() {
-        for (SingleVehicleContract contract : childContracts) {
-            contract.setInactive();
-        }
-
-        super.isActive = false;
+        childContracts.forEach(SingleVehicleContract::setInactive);
+        this.isActive = false;
     }
 
     @Override

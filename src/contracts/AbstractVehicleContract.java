@@ -12,12 +12,15 @@ public abstract class AbstractVehicleContract extends AbstractContract {
                                    ContractPaymentData contractPaymentData, int coverageAmount)
     {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
+        validateBeneficiary(beneficiary);
 
+        this.beneficiary = beneficiary;
+    }
+
+    private void validateBeneficiary(Person beneficiary) {
         if (beneficiary != null && policyHolder != null && beneficiary.equals(policyHolder)) {
             throw new IllegalArgumentException();
         }
-
-        this.beneficiary = beneficiary;
     }
 
     public void setBeneficiary(Person beneficiary){
@@ -25,9 +28,7 @@ public abstract class AbstractVehicleContract extends AbstractContract {
         V dokumentacii to nie je, ale v konstruktore je dane
         ze beneficiary a policyHolder sa nemozu rovnat
          */
-        if (beneficiary != null && policyHolder != null && beneficiary.equals(policyHolder)) {
-            throw new IllegalArgumentException();
-        }
+        validateBeneficiary(beneficiary);
         this.beneficiary = beneficiary;
     }
 

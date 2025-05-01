@@ -1,34 +1,19 @@
 package objects;
 
-import java.util.Objects;
-
 public class Vehicle {
     final private String licensePlate;
     final private int originalValue;
 
     public Vehicle(String licensePlate, int originalValue){
-        if (licensePlate == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (licensePlate.length() != 7) {
-            throw new IllegalArgumentException();
-        }
-
-        for(int i = 0; i < licensePlate.length(); i++) {
-            char c = licensePlate.charAt(i);
-            if(!((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        if (originalValue <= 0) {
+        if (licensePlate == null) throw new IllegalArgumentException();
+        if (licensePlate.length() != 7) throw new IllegalArgumentException();
+        if (originalValue <= 0) throw new IllegalArgumentException();
+        if (!licensePlate.chars().allMatch(c -> Character.isDigit(c) || Character.isUpperCase(c))) {
             throw new IllegalArgumentException();
         }
 
         this.licensePlate = licensePlate;
         this.originalValue = originalValue;
-
     }
 
     public String getLicensePlate(){

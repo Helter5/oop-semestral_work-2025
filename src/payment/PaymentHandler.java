@@ -14,9 +14,7 @@ public class PaymentHandler {
     final private InsuranceCompany insurer;
 
     public PaymentHandler(InsuranceCompany insurer) {
-        if (insurer == null) {
-            throw new IllegalArgumentException();
-        }
+        if (insurer == null) throw new IllegalArgumentException();
 
         this.insurer = insurer;
         this.paymentHistory = new HashMap<>();
@@ -27,98 +25,88 @@ public class PaymentHandler {
     }
 
     public void pay(MasterVehicleContract contract, int amount) {
-        if (contract == null) {
-            throw new IllegalArgumentException();
-        }
+        validateContractAndAmount(contract, amount);
+        if (contract.getChildContracts().isEmpty()) throw new InvalidContractException("contract exception");
 
-        if (amount <= 0) {
-            throw new IllegalArgumentException();
-        }
+        int remainingAmount = payOffOutstandingBalance(contract, amount);
+        payForPremiums(contract, remainingAmount);
 
-        if (!contract.isActive() || !contract.getInsurer().equals(insurer) || contract.getChildContracts().isEmpty()) {
-            throw new InvalidContractException("contract exception");
-        }
-
-        int originalAmount = amount;
-
-        // Step 1: Pay off outstanding balances for active child contracts
-        for (AbstractContract childContract : contract.getChildContracts()) {
-            // Skip inactive contracts
-            if (!childContract.isActive()) continue;
-
-            ContractPaymentData paymentData = childContract.getContractPaymentData();
-            int outstandingBalance = paymentData.getOutstandingBalance();
-
-            if (outstandingBalance > 0) {
-                // If we have enough funds to cover the outstanding balance
-                if (amount >= outstandingBalance) {
-                    amount -= outstandingBalance;
-                    paymentData.setOutstandingBalance(0);
-                } else {
-                    // If we don't have enough funds
-                    paymentData.setOutstandingBalance(outstandingBalance - amount);
-                    amount = 0;
-                    break;
-                }
-            }
-        }
-
-        // Step 2: While we still have funds, apply payments as credit against future premiums
-        while (amount > 0) {
-            boolean fundsApplied = false;
-
-            for (AbstractContract childContract : contract.getChildContracts()) {
-                // Skip inactive contracts
-                if (!childContract.isActive()) continue;
-
-                ContractPaymentData paymentData = childContract.getContractPaymentData();
-                int premium = paymentData.getPremium();
-
-                // Skip contracts with no premium
-                if (premium <= 0) continue;
-
-                // If we have enough funds to cover the premium
-                if (amount >= premium) {
-                    paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() - premium);
-                    amount -= premium;
-                    fundsApplied = true;
-                } else {
-                    // If we don't have enough funds for the full premium
-                    paymentData.setOutstandingBalance(paymentData.getOutstandingBalance() - amount);
-                    amount = 0;
-                    fundsApplied = true;
-                    break;
-                }
-            }
-
-            // If we couldn't apply any funds in this cycle, break out
-            if (!fundsApplied) break;
-        }
-
-        // Create payment record with original amount
-        LocalDateTime currentTime = insurer.getCurrentTime();
-        PaymentInstance paymentInstance = new PaymentInstance(currentTime, originalAmount);
-
-        paymentHistory.putIfAbsent(contract, new TreeSet<>());
-        paymentHistory.get(contract).add(paymentInstance);
+        recordPayment(contract, amount);
     }
 
     public void pay(AbstractContract contract, int amount) {
-        if (contract == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (amount <= 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!contract.isActive() || !contract.getInsurer().equals(insurer)) {
-            throw new InvalidContractException("contract exception");
-        }
+        validateContractAndAmount(contract, amount);
 
         int outstandingBalance = contract.getContractPaymentData().getOutstandingBalance();
         contract.getContractPaymentData().setOutstandingBalance(outstandingBalance - amount);
 
+        recordPayment(contract, amount);
+    }
+
+    /*
+    @ help methods
+     */
+    private void validateContractAndAmount(AbstractContract contract, int amount) {
+        if (contract == null) throw new IllegalArgumentException();
+        if (amount <= 0) throw new IllegalArgumentException();
+        if (!contract.isActive() || !contract.getInsurer().equals(insurer)) {
+            throw new InvalidContractException("contract exception");
+        }
+    }
+
+    private int payOffOutstandingBalance(MasterVehicleContract contract, int amount) {
+        int remainingAmount = amount;
+
+        for (AbstractContract childContract : contract.getChildContracts()) {
+            if (!childContract.isActive()) continue;
+
+            ContractPaymentData contractPaymentData = childContract.getContractPaymentData();
+            int outstandingBalance = contractPaymentData.getOutstandingBalance();
+
+            if (outstandingBalance > 0) {
+                if (remainingAmount >= outstandingBalance) {
+                    remainingAmount -= outstandingBalance;
+                    contractPaymentData.setOutstandingBalance(0);
+                } else {
+                    contractPaymentData.setOutstandingBalance(outstandingBalance - remainingAmount);
+                    remainingAmount = 0;
+                    break;
+                }
+            }
+        }
+
+        return remainingAmount;
+    }
+
+    private void payForPremiums(MasterVehicleContract contract, int amount) {
+        while (amount > 0) {
+            boolean fundsApplied = false;
+
+            for (AbstractContract childContract : contract.getChildContracts()) {
+                if (!childContract.isActive()) continue;
+
+                ContractPaymentData contractPaymentData = childContract.getContractPaymentData();
+                int premium = contractPaymentData.getPremium();
+
+                if (premium <= 0) continue;
+
+                if (amount >= premium) {
+                    contractPaymentData.setOutstandingBalance(contractPaymentData.getOutstandingBalance() - premium);
+                    amount -= premium;
+                    fundsApplied = true;
+                } else {
+                    contractPaymentData.setOutstandingBalance(contractPaymentData.getOutstandingBalance() - amount);
+                    amount = 0;
+                    fundsApplied = true;
+                    break;
+                }
+            }
+
+            if (!fundsApplied) break;
+        }
+    }
+
+    private void recordPayment(AbstractContract contract, int amount) {
         LocalDateTime currentTime = insurer.getCurrentTime();
         PaymentInstance paymentInstance = new PaymentInstance(currentTime, amount);
 

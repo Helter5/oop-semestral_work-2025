@@ -11,17 +11,9 @@ public class ContractPaymentData {
     public ContractPaymentData(int premium, PremiumPaymentFrequency premiumPaymentFrequency,
                                LocalDateTime nextPaymentTime, int outstandingBalance)
     {
-        if (premium <= 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (premiumPaymentFrequency == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (nextPaymentTime == null) {
-            throw new IllegalArgumentException();
-        }
+        validatePremium(premium);
+        validatePremiumPaymentFrequency(premiumPaymentFrequency);
+        validateNextPaymentTime(nextPaymentTime);
 
         this.premium = premium;
         this.premiumPaymentFrequency = premiumPaymentFrequency;
@@ -34,9 +26,7 @@ public class ContractPaymentData {
     }
 
     public void setPremium(int premium){
-        if (premium <= 0) {
-            throw new IllegalArgumentException();
-        }
+        validatePremium(premium);
         this.premium = premium;
     }
 
@@ -49,9 +39,7 @@ public class ContractPaymentData {
     }
 
     public void setPremiumPaymentFrequency(PremiumPaymentFrequency premiumPaymentFrequency){
-        if (premiumPaymentFrequency == null) {
-            throw new IllegalArgumentException();
-        }
+        validatePremiumPaymentFrequency(premiumPaymentFrequency);
         this.premiumPaymentFrequency = premiumPaymentFrequency;
     }
 
@@ -65,5 +53,20 @@ public class ContractPaymentData {
 
     public void updateNextPaymentTime() {
         nextPaymentTime = nextPaymentTime.plusMonths(premiumPaymentFrequency.getValueInMonths());
+    }
+
+    /*
+    @ opakujuce sa podmienky
+     */
+    private void validatePremium(int premium) {
+        if (premium <= 0) throw new IllegalArgumentException();
+    }
+
+    private void validatePremiumPaymentFrequency(PremiumPaymentFrequency premiumPaymentFrequency) {
+        if (premiumPaymentFrequency == null) throw new IllegalArgumentException();
+    }
+
+    private void validateNextPaymentTime(LocalDateTime nextPaymentTime) {
+        if (nextPaymentTime == null) throw new IllegalArgumentException();
     }
 }
