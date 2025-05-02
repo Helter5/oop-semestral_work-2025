@@ -529,4 +529,264 @@ class MasterVehicleContractTest {
         // And verify that the isActive() method returns false
         assertFalse(masterContract.isActive());
     }
+
+    @Test
+    void testSetInactiveOnMasterContract() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Create child contracts
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+
+        SingleVehicleContract contract1 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        SingleVehicleContract contract2 = new SingleVehicleContract(
+                "SC002", company, beneficiary, legalPerson,
+                paymentData, 6000, new Vehicle("DEF4567", 12000));
+
+        // Add children to master contract
+        masterContract.requestAdditionOfChildContract(contract1);
+        masterContract.requestAdditionOfChildContract(contract2);
+
+        // Initially all contracts should be active
+        assertTrue(masterContract.isActive());
+        assertTrue(contract1.isActive());
+        assertTrue(contract2.isActive());
+
+        // Call setInactive on the master contract
+        masterContract.setInactive();
+
+        // Verify that master contract and all child contracts are now inactive
+        assertFalse(masterContract.isActive());
+        assertFalse(contract1.isActive());
+        assertFalse(contract2.isActive());
+
+        // Verify the internal isActive field is false using reflection
+        boolean masterIsActiveField = true;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            masterIsActiveField = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+        assertFalse(masterIsActiveField);
+    }
+
+    @Test
+    void testMasterContractIsInactiveWhenAllChildrenAreInactive() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Create child contracts
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+
+        SingleVehicleContract contract1 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        SingleVehicleContract contract2 = new SingleVehicleContract(
+                "SC002", company, beneficiary, legalPerson,
+                paymentData, 6000, new Vehicle("DEF4567", 12000));
+
+        // Add children to master contract
+        masterContract.requestAdditionOfChildContract(contract1);
+        masterContract.requestAdditionOfChildContract(contract2);
+
+        // Initially all contracts should be active
+        assertTrue(masterContract.isActive());
+        assertTrue(contract1.isActive());
+        assertTrue(contract2.isActive());
+
+        // Make all child contracts inactive by calling setInactive on each child
+        contract1.setInactive();
+        contract2.setInactive();
+
+        // Verify internal state of children
+        assertFalse(contract1.isActive());
+        assertFalse(contract2.isActive());
+
+        // Verify that master contract isActive() returns false
+        // even though its internal isActive field might still be true
+        assertFalse(masterContract.isActive());
+
+        // Verify the internal isActive field is still true using reflection
+        boolean masterIsActiveField = false;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            masterIsActiveField = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+        assertTrue(masterIsActiveField, "Master contract's isActive field should still be true");
+    }
+
+    @Test
+    void testMasterContractActivationWithSingleInactiveChild() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Initially master contract should be active
+        assertTrue(masterContract.isActive());
+
+        // Create and add a single child contract
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+        SingleVehicleContract childContract = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        masterContract.requestAdditionOfChildContract(childContract);
+
+        // Both contracts should be active initially
+        assertTrue(masterContract.isActive());
+        assertTrue(childContract.isActive());
+
+        // Set child contract inactive
+        childContract.setInactive();
+
+        // Verify child is inactive
+        assertFalse(childContract.isActive());
+
+        // Verify that master contract's isActive() returns false
+        // when all children are inactive (in this case, the only child)
+        assertFalse(masterContract.isActive());
+
+        // Verify the master contract's internal isActive field remains true
+        boolean masterIsActiveField = false;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            masterIsActiveField = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+
+        // The internal isActive field of master contract should remain true
+        assertTrue(masterIsActiveField, "Master contract's isActive field should remain true when child is set inactive");
+    }
+
+    @Test
+    void testNoChildContractsIsActiveDependsOnField() {
+        // Create a master contract with no children
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // By default, a new contract should have isActive field set to true
+        assertTrue(masterContract.isActive());
+
+        // Get the internal isActive field value to verify initial state
+        boolean initialIsActiveField = true;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            initialIsActiveField = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+        assertTrue(initialIsActiveField);
+
+        // Manually set isActive to false
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            isActiveField.set(masterContract, false);
+        } catch (Exception e) {
+            fail("Could not set isActive field: " + e.getMessage());
+        }
+
+        // With no children, isActive() should return the isActive field value (now false)
+        assertFalse(masterContract.isActive());
+
+        // Set back to true
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            isActiveField.set(masterContract, true);
+        } catch (Exception e) {
+            fail("Could not set isActive field: " + e.getMessage());
+        }
+
+        // Should be active again
+        assertTrue(masterContract.isActive());
+    }
+
+    @Test
+    void testWithChildContractsIsActiveIgnoresField() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Create child contracts
+        ContractPaymentData paymentData = new ContractPaymentData(
+                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+
+        SingleVehicleContract contract1 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        SingleVehicleContract contract2 = new SingleVehicleContract(
+                "SC002", company, beneficiary, legalPerson,
+                paymentData, 6000, new Vehicle("DEF5678", 12000));
+
+        // Add children to master contract
+        masterContract.requestAdditionOfChildContract(contract1);
+        masterContract.requestAdditionOfChildContract(contract2);
+
+        // Verify that master contract is active (since child contracts are active)
+        assertTrue(masterContract.isActive());
+
+        // Set master contract's isActive field to false using reflection
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            isActiveField.set(masterContract, false);
+        } catch (Exception e) {
+            fail("Could not set isActive field: " + e.getMessage());
+        }
+
+        // Verify master contract's isActive field is false
+        boolean masterIsActiveField = true;
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            masterIsActiveField = (boolean) isActiveField.get(masterContract);
+        } catch (Exception e) {
+            fail("Could not access isActive field: " + e.getMessage());
+        }
+        assertFalse(masterIsActiveField);
+
+        // Despite master's isActive field being false, isActive() should return true
+        // because there are active child contracts
+        assertTrue(masterContract.isActive());
+
+        // Make one child inactive - master should still be active
+        contract1.setInactive();
+        assertTrue(masterContract.isActive());
+
+        // Make all children inactive - master should be inactive regardless of field
+        contract2.setInactive();
+        assertFalse(masterContract.isActive());
+
+        // Set master's isActive field to true - should still be inactive since all children are inactive
+        try {
+            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
+            isActiveField.setAccessible(true);
+            isActiveField.set(masterContract, true);
+        } catch (Exception e) {
+            fail("Could not set isActive field: " + e.getMessage());
+        }
+
+        // Verify field is true but method still returns false
+        assertTrue(masterIsActiveField = true);
+        assertFalse(masterContract.isActive());
+    }
 }

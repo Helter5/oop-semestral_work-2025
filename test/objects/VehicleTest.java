@@ -20,6 +20,11 @@ public class VehicleTest {
         Vehicle vehicle3 = new Vehicle("1234567", 7500);
         assertEquals("1234567", vehicle3.getLicensePlate());
         assertEquals(7500, vehicle3.getOriginalValue());
+
+        // Valid vehicle with only numbers
+        Vehicle vehicle4 = new Vehicle("PATAMAT", 3333);
+        assertEquals("PATAMAT", vehicle4.getLicensePlate());
+        assertEquals(3333, vehicle4.getOriginalValue());
     }
 
     @Test
