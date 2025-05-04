@@ -145,19 +145,18 @@ public class InsuranceCompany {
             throw new InvalidContractException("contract exception");
         }
 
-        if (!masterVehicleContract.getInsurer().equals(singleVehicleContract.getInsurer())) {
+        if (masterVehicleContract.getInsurer() != this || singleVehicleContract.getInsurer() != this) {
             throw new InvalidContractException("contract exception");
         }
 
-        if (!masterVehicleContract.getPolicyHolder().equals(singleVehicleContract.getPolicyHolder())) {
+        if (masterVehicleContract.getPolicyHolder() != singleVehicleContract.getPolicyHolder()) {
             throw new InvalidContractException("contract exception");
         }
 
         contracts.remove(singleVehicleContract);
         Person policyHolder = singleVehicleContract.getPolicyHolder();
         policyHolder.getContracts().remove(singleVehicleContract);
-        masterVehicleContract.requestAdditionOfChildContract(singleVehicleContract);
-
+        masterVehicleContract.getChildContracts().add(singleVehicleContract);
     }
 
     public void chargePremiumsOnContracts() {

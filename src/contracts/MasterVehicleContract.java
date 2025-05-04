@@ -29,29 +29,39 @@ public class MasterVehicleContract extends AbstractVehicleContract {
     }
 
     public void requestAdditionOfChildContract(SingleVehicleContract contract){
-        childContracts.add(contract);
+        insurer.moveSingleVehicleContractToMasterVehicleContract(this, contract);
     }
 
     @Override
     public boolean isActive() {
-        return childContracts.isEmpty() ?
-                isActive : childContracts.stream().anyMatch(SingleVehicleContract::isActive);
+        if (childContracts.isEmpty()) {
+            return isActive;
+        }
+
+        for (SingleVehicleContract contract : childContracts) {
+            if (contract.isActive()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void setInactive() {
-        childContracts.forEach(SingleVehicleContract::setInactive);
+        for (SingleVehicleContract contract : childContracts) {
+            contract.setInactive();
+        }
         this.isActive = false;
     }
 
     @Override
     public void pay(int amount) {
-        // chyba pri zadani - viz. discord
         insurer.getHandler().pay(this, amount);
     }
 
     @Override
     public void updateBalance() {
-        insurer.chargePremiumOnContract(this);
+        MasterVehicleContract self = this;
+        insurer.chargePremiumOnContract(self);
     }
 }

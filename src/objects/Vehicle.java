@@ -8,9 +8,16 @@ public class Vehicle {
         if (licensePlate == null) throw new IllegalArgumentException();
         if (licensePlate.length() != 7) throw new IllegalArgumentException();
         if (originalValue <= 0) throw new IllegalArgumentException();
-        if (!licensePlate.chars().allMatch(c -> Character.isDigit(c) || Character.isUpperCase(c))) {
-            throw new IllegalArgumentException();
+
+        boolean isValid = true;
+        for (int i=0; i<licensePlate.length(); i++) {
+            char c = licensePlate.charAt(i);
+            if (!Character.isDigit(c) && !Character.isUpperCase(c)) {
+                isValid = false;
+                break;
+            }
         }
+        if (!isValid) throw new IllegalArgumentException();
 
         this.licensePlate = licensePlate;
         this.originalValue = originalValue;

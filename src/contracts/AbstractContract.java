@@ -84,7 +84,8 @@ public abstract class AbstractContract {
     }
 
     public void updateBalance(){
-        insurer.chargePremiumOnContract(this);
+        AbstractContract self = this;
+        insurer.chargePremiumOnContract(self);
     }
 
     @Override

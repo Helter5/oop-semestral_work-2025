@@ -33,7 +33,14 @@ public class Person {
     // Rodne číslo
 
     public static boolean isStringNumber(String string) {
-        return string != null && string.chars().allMatch(Character::isDigit);
+        if (string == null) return false;
+
+        for (int i=0; i<string.length(); i++) {
+            if (!Character.isDigit(string.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static boolean isValidBirthNumber(String birthNumber) {

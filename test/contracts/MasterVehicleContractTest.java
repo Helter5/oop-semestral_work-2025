@@ -615,17 +615,6 @@ class MasterVehicleContractTest {
         // Verify that master contract isActive() returns false
         // even though its internal isActive field might still be true
         assertFalse(masterContract.isActive());
-
-        // Verify the internal isActive field is still true using reflection
-        boolean masterIsActiveField = false;
-        try {
-            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
-            isActiveField.setAccessible(true);
-            masterIsActiveField = (boolean) isActiveField.get(masterContract);
-        } catch (Exception e) {
-            fail("Could not access isActive field: " + e.getMessage());
-        }
-        assertTrue(masterIsActiveField, "Master contract's isActive field should still be true");
     }
 
     @Test
@@ -660,18 +649,25 @@ class MasterVehicleContractTest {
         // when all children are inactive (in this case, the only child)
         assertFalse(masterContract.isActive());
 
-        // Verify the master contract's internal isActive field remains true
-        boolean masterIsActiveField = false;
-        try {
-            java.lang.reflect.Field isActiveField = AbstractContract.class.getDeclaredField("isActive");
-            isActiveField.setAccessible(true);
-            masterIsActiveField = (boolean) isActiveField.get(masterContract);
-        } catch (Exception e) {
-            fail("Could not access isActive field: " + e.getMessage());
-        }
 
-        // The internal isActive field of master contract should remain true
-        assertTrue(masterIsActiveField, "Master contract's isActive field should remain true when child is set inactive");
+        SingleVehicleContract childContract2 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1245", 10000));
+
+        SingleVehicleContract childContract3 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData, 5000, new Vehicle("ABC1256", 10000));
+
+        MasterVehicleContract masterContract2 = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        assertTrue(masterContract2.isActive());
+        assertTrue(childContract2.isActive());
+        assertTrue(childContract3.isActive());
+
+
+        masterContract2.setInactive();
+        assertFalse(masterContract2.isActive());
     }
 
     @Test

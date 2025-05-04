@@ -110,7 +110,7 @@ public class PaymentHandler {
         LocalDateTime currentTime = insurer.getCurrentTime();
         PaymentInstance paymentInstance = new PaymentInstance(currentTime, amount);
 
-        paymentHistory.putIfAbsent(contract, new HashSet<>());
+        paymentHistory.putIfAbsent(contract, new TreeSet<>());
         paymentHistory.get(contract).add(paymentInstance);
     }
 }
