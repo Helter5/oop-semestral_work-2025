@@ -35,7 +35,7 @@ public class Vehicle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Vehicle vehicle)) return false;
-        return Objects.equals(licensePlate, vehicle.licensePlate);
+        return Objects.(licensePlate, vehicle.licensePlate);
     }
 
     @Override

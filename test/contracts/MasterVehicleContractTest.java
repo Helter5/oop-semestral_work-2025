@@ -785,4 +785,81 @@ class MasterVehicleContractTest {
         assertTrue(masterIsActiveField = true);
         assertFalse(masterContract.isActive());
     }
+
+
+    @Test
+    void testPayFromExample() {
+        // Create a master contract
+        MasterVehicleContract masterContract = new MasterVehicleContract(
+                "MC001", company, beneficiary, legalPerson);
+
+        // Add the contract to the insurance company
+        company.getContracts().add(masterContract);
+
+        // Create four child contracts as specified in the example
+        // contract1 - premium 30, active, with outstanding balance 30
+        ContractPaymentData paymentData1 = new ContractPaymentData(
+                30, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 30);
+        SingleVehicleContract contract1 = new SingleVehicleContract(
+                "SC001", company, beneficiary, legalPerson,
+                paymentData1, 5000, new Vehicle("ABC1234", 10000));
+
+        // contract2 - premium 50, active, with outstanding balance 50
+        ContractPaymentData paymentData2 = new ContractPaymentData(
+                50, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 50);
+        SingleVehicleContract contract2 = new SingleVehicleContract(
+                "SC002", company, beneficiary, legalPerson,
+                paymentData2, 6000, new Vehicle("DEF5678", 12000));
+
+        // contract3 - premium 75, active, with outstanding balance 100
+        ContractPaymentData paymentData3 = new ContractPaymentData(
+                75, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 100);
+        SingleVehicleContract contract3 = new SingleVehicleContract(
+                "SC003", company, beneficiary, legalPerson,
+                paymentData3, 5000, new Vehicle("GHI9012", 10000));
+
+        // contract4 - premium 20, inactive, with outstanding balance 0
+        ContractPaymentData paymentData4 = new ContractPaymentData(
+                20, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
+        SingleVehicleContract contract4 = new SingleVehicleContract(
+                "SC004", company, beneficiary, legalPerson,
+                paymentData4, 6000, new Vehicle("JKL3456", 12000));
+
+        // Add contracts to master contract
+        masterContract.requestAdditionOfChildContract(contract1);
+        masterContract.requestAdditionOfChildContract(contract2);
+        masterContract.requestAdditionOfChildContract(contract3);
+        masterContract.requestAdditionOfChildContract(contract4);
+        contract4.setInactive();
+
+        // Verify initial outstanding balances
+        assertEquals(30, contract1.getContractPaymentData().getOutstandingBalance());
+        assertEquals(50, contract2.getContractPaymentData().getOutstandingBalance());
+        assertEquals(100, contract3.getContractPaymentData().getOutstandingBalance());
+        assertEquals(0, contract4.getContractPaymentData().getOutstandingBalance());
+
+        // Process payment of 400 as specified in the example
+        masterContract.pay(400);
+
+        // Verify payment was processed
+        assertFalse(company.getHandler().getPaymentHistory().isEmpty());
+        assertTrue(company.getHandler().getPaymentHistory().containsKey(masterContract));
+        assertEquals(1, company.getHandler().getPaymentHistory().get(masterContract).size());
+
+        // Verify the payment details
+        PaymentInstance payment = company.getHandler().getPaymentHistory().get(masterContract).iterator().next();
+        assertEquals(400, payment.getPaymentAmount());
+        assertEquals(company.getCurrentTime(), payment.getPaymentTime());
+
+        // After paying all outstanding balances (30+50+100=180), 220 remains
+        // First cycle: 30+50+75=155 is paid for premiums, 65 remains
+        // Second cycle: 30+35=65 is paid (contract2 only gets 35 more), 0 remains
+
+        // Verify final outstanding balances match the expected values
+        assertEquals(-60, contract1.getContractPaymentData().getOutstandingBalance()); // Overpaid by 60
+        assertEquals(-85, contract2.getContractPaymentData().getOutstandingBalance()); // Overpaid by 85
+        assertEquals(-75, contract3.getContractPaymentData().getOutstandingBalance()); // Overpaid by 75
+        assertEquals(0, contract4.getContractPaymentData().getOutstandingBalance());   // Inactive, unchanged
+    }
+
 }

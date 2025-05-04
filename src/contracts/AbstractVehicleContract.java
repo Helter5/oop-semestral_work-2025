@@ -18,16 +18,12 @@ public abstract class AbstractVehicleContract extends AbstractContract {
     }
 
     private void validateBeneficiary(Person beneficiary) {
-        if (beneficiary != null && policyHolder != null && beneficiary.equals(policyHolder)) {
+        if (beneficiary != null && beneficiary.equals(policyHolder)) {
             throw new IllegalArgumentException();
         }
     }
 
     public void setBeneficiary(Person beneficiary){
-        /*
-        V dokumentacii to nie je, ale v konstruktore je dane
-        ze beneficiary a policyHolder sa nemozu rovnat
-         */
         validateBeneficiary(beneficiary);
         this.beneficiary = beneficiary;
     }

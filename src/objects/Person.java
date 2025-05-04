@@ -3,6 +3,7 @@ package objects;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import contracts.AbstractContract;
 
@@ -114,5 +115,18 @@ public class Person {
     public void payout(int paidOutAmount){
         if (paidOutAmount <= 0) throw new IllegalArgumentException();
         this.paidOutAmount += paidOutAmount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

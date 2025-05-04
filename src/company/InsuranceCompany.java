@@ -68,7 +68,8 @@ public class InsuranceCompany {
         }
 
         double totalPremiumValue = proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths());
-        if ( totalPremiumValue < vehicleToInsure.getOriginalValue() * 0.02) {
+        double twoPercentOfOriginalValue = (int) (vehicleToInsure.getOriginalValue() * 0.02);
+        if ( totalPremiumValue < twoPercentOfOriginalValue) {
             throw new IllegalArgumentException();
         }
 
@@ -149,7 +150,7 @@ public class InsuranceCompany {
             throw new InvalidContractException("contract exception");
         }
 
-        if (masterVehicleContract.getPolicyHolder() != singleVehicleContract.getPolicyHolder()) {
+        if (!masterVehicleContract.getPolicyHolder().equals(singleVehicleContract.getPolicyHolder())) {
             throw new InvalidContractException("contract exception");
         }
 
