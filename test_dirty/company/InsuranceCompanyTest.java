@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import payment.PaymentHandler;
 import payment.PremiumPaymentFrequency;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -631,5 +632,10 @@ public class InsuranceCompanyTest {
         // (Contract already inactive from previous test)
         assertThrows(InvalidContractException.class, () ->
                 company.processClaim(contract, affectedPersons));
+    }
+
+    @Test
+    public void testMoveContractBetweenDifferentCompanies() {
+
     }
 }

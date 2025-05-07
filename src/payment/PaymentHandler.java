@@ -10,8 +10,8 @@ import contracts.InvalidContractException;
 
 
 public class PaymentHandler {
-    final private Map<AbstractContract, Set<PaymentInstance>> paymentHistory;
-    final private InsuranceCompany insurer;
+    private final Map<AbstractContract, Set<PaymentInstance>> paymentHistory;
+    private final InsuranceCompany insurer;
 
     public PaymentHandler(InsuranceCompany insurer) {
         if (insurer == null) throw new IllegalArgumentException();

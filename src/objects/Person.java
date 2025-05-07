@@ -8,9 +8,9 @@ import java.util.Set;
 import contracts.AbstractContract;
 
 public class Person {
-    final private String id;
-    final private LegalForm legalForm;
-    final private Set<AbstractContract> contracts;
+    private final String id;
+    private final LegalForm legalForm;
+    private final Set<AbstractContract> contracts;
     private int paidOutAmount;
 
     public Person(String id){

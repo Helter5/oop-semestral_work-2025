@@ -12,8 +12,8 @@ import payment.PremiumPaymentFrequency;
 import objects.Vehicle;
 
 public class InsuranceCompany {
-    final private Set<AbstractContract> contracts;
-    final private PaymentHandler handler;
+    private final Set<AbstractContract> contracts;
+    private final PaymentHandler handler;
     private LocalDateTime currentTime;
 
     public InsuranceCompany(LocalDateTime currentTime) {
@@ -106,8 +106,8 @@ public class InsuranceCompany {
             throw new IllegalArgumentException();
         }
 
-        double totalPremiumValue = proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths());
-        if (totalPremiumValue < 5 * personsToInsure.size()) {
+        double totalPremiumValue = (int)(proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths()));
+        if (totalPremiumValue < (5 * personsToInsure.size())) {
             throw new IllegalArgumentException();
         }
 
@@ -157,6 +157,13 @@ public class InsuranceCompany {
 
         if (!masterVehicleContract.getPolicyHolder().equals(singleVehicleContract.getPolicyHolder())) {
             throw new InvalidContractException("contract exception");
+        }
+
+        if(!this.contracts.contains(singleVehicleContract) ||
+                !singleVehicleContract.getPolicyHolder().getContracts().contains(singleVehicleContract) ||
+                !this.contracts.contains(masterVehicleContract) ||
+                !masterVehicleContract.getPolicyHolder().getContracts().contains(masterVehicleContract)){
+            throw new InvalidContractException("contract is not valid.");
         }
 
         contracts.remove(singleVehicleContract);
@@ -233,7 +240,7 @@ public class InsuranceCompany {
         }
         payoutTarget.payout(payoutAmount);
 
-        if (expectedDamages >= 0.7 * singleVehicleContract.getInsuredVehicle().getOriginalValue()) {
+        if (expectedDamages >= (int)(0.7 * singleVehicleContract.getInsuredVehicle().getOriginalValue())) {
             singleVehicleContract.setInactive();
         }
     }

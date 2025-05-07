@@ -6,7 +6,7 @@ import company.InsuranceCompany;
 import payment.ContractPaymentData;
 
 public class SingleVehicleContract extends AbstractVehicleContract {
-    final private Vehicle insuredVehicle;
+    private final Vehicle insuredVehicle;
 
     public SingleVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder,
@@ -31,6 +31,7 @@ public class SingleVehicleContract extends AbstractVehicleContract {
         return insuredVehicle;
     }
 
+    /*
     @Override
     public boolean isActive() {
         return isActive;
@@ -40,4 +41,5 @@ public class SingleVehicleContract extends AbstractVehicleContract {
     public void setInactive() {
         this.isActive = false;
     }
+    */
 }

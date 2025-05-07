@@ -9,7 +9,7 @@ import objects.LegalForm;
 import static objects.Person.isValidBirthNumber;
 
 public class TravelContract extends AbstractContract {
-    final private Set<Person> insuredPersons;
+    private final Set<Person> insuredPersons;
 
     public TravelContract(String contractNumber, InsuranceCompany insurer,
                           Person policyHolder, ContractPaymentData contractPaymentData,
@@ -36,6 +36,7 @@ public class TravelContract extends AbstractContract {
             }
         }
 
+        //this.insuredPersons = personsToInsure;
         this.insuredPersons = personsToInsure;
 
     }

@@ -1,8 +1,8 @@
 package objects;
 
 public class Vehicle {
-    final private String licensePlate;
-    final private int originalValue;
+    private final String licensePlate;
+    private final int originalValue;
 
     public Vehicle(String licensePlate, int originalValue){
         if (licensePlate == null) throw new IllegalArgumentException();

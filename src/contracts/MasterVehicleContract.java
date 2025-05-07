@@ -7,7 +7,7 @@ import objects.LegalForm;
 import objects.Person;
 
 public class MasterVehicleContract extends AbstractVehicleContract {
-    final private Set<SingleVehicleContract> childContracts;
+    private final Set<SingleVehicleContract> childContracts;
 
     public MasterVehicleContract(String contractNumber, InsuranceCompany insurer,
                                  Person beneficiary, Person policyHolder)

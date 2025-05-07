@@ -8,10 +8,10 @@ import payment.ContractPaymentData;
 import java.util.Objects;
 
 public abstract class AbstractContract {
-    final private String contractNumber;
-    final protected InsuranceCompany  insurer;
-    final protected Person policyHolder;
-    final protected ContractPaymentData contractPaymentData;
+    private final String contractNumber;
+    protected final InsuranceCompany  insurer;
+    protected final Person policyHolder;
+    protected final ContractPaymentData contractPaymentData;
     protected int coverageAmount;
     protected boolean isActive;
 
