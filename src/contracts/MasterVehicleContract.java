@@ -32,6 +32,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
         insurer.moveSingleVehicleContractToMasterVehicleContract(this, contract);
     }
 
+
     @Override
     public boolean isActive() {
         if (childContracts.isEmpty()) {
@@ -45,6 +46,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
         }
         return false;
     }
+
 
     @Override
     public void setInactive() {

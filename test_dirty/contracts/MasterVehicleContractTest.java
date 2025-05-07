@@ -102,6 +102,10 @@ class MasterVehicleContractTest {
                         LocalDateTime.now(), 0),
                 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add contracts and verify order
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -132,6 +136,10 @@ class MasterVehicleContractTest {
         SingleVehicleContract contract2 = new SingleVehicleContract(
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
+
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
 
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
@@ -181,6 +189,10 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -215,6 +227,10 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -245,6 +261,9 @@ class MasterVehicleContractTest {
         SingleVehicleContract childContract = new SingleVehicleContract(
                 "SC001", company, beneficiary, legalPerson,
                 paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(masterContract);
+        company.getContracts().add(childContract);
 
         // Add child contract to master contract
         masterContract.requestAdditionOfChildContract(childContract);
@@ -302,6 +321,9 @@ class MasterVehicleContractTest {
                 "SC001", company, beneficiary, legalPerson,
                 paymentData, 5000, new Vehicle("ABC1234", 10000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(childContract);
+
         // Add the child contract to the master contract
         masterContract.requestAdditionOfChildContract(childContract);
 
@@ -333,6 +355,9 @@ class MasterVehicleContractTest {
                 "SC001", company, beneficiary, legalPerson,
                 paymentData, 5000, new Vehicle("ABC1234", 10000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(childContract);
+
         masterContract.requestAdditionOfChildContract(childContract);
         company.getContracts().add(masterContract);
 
@@ -357,6 +382,9 @@ class MasterVehicleContractTest {
         SingleVehicleContract childContract = new SingleVehicleContract(
                 "SC001", differentCompany, beneficiary, legalPerson,
                 paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        differentCompany.getContracts().add(foreignContract);
+        differentCompany.getContracts().add(childContract);
 
         foreignContract.requestAdditionOfChildContract(childContract);
 
@@ -497,6 +525,11 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
+
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -548,6 +581,10 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -595,6 +632,10 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF4567", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -632,6 +673,9 @@ class MasterVehicleContractTest {
         SingleVehicleContract childContract = new SingleVehicleContract(
                 "SC001", company, beneficiary, legalPerson,
                 paymentData, 5000, new Vehicle("ABC1234", 10000));
+
+        company.getContracts().add(masterContract);
+        company.getContracts().add(childContract);
 
         masterContract.requestAdditionOfChildContract(childContract);
 
@@ -733,6 +777,10 @@ class MasterVehicleContractTest {
                 "SC002", company, beneficiary, legalPerson,
                 paymentData, 6000, new Vehicle("DEF5678", 12000));
 
+        company.getContracts().add(masterContract);
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -786,7 +834,6 @@ class MasterVehicleContractTest {
         assertFalse(masterContract.isActive());
     }
 
-
     @Test
     void testPayFromExample() {
         // Create a master contract
@@ -825,11 +872,17 @@ class MasterVehicleContractTest {
                 "SC004", company, beneficiary, legalPerson,
                 paymentData4, 6000, new Vehicle("JKL3456", 12000));
 
+        company.getContracts().add(contract1);
+        company.getContracts().add(contract2);
+        company.getContracts().add(contract3);
+        company.getContracts().add(contract4);
+
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
         masterContract.requestAdditionOfChildContract(contract3);
         masterContract.requestAdditionOfChildContract(contract4);
+
         contract4.setInactive();
 
         // Verify initial outstanding balances
@@ -861,5 +914,4 @@ class MasterVehicleContractTest {
         assertEquals(-75, contract3.getContractPaymentData().getOutstandingBalance()); // Overpaid by 75
         assertEquals(0, contract4.getContractPaymentData().getOutstandingBalance());   // Inactive, unchanged
     }
-
 }

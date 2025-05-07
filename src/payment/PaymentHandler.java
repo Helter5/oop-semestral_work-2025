@@ -80,6 +80,29 @@ public class PaymentHandler {
 
     private void payForPremiums(MasterVehicleContract contract, int amount) {
         while (amount > 0) {
+            int initialAmount = amount;
+
+            for (AbstractContract child : contract.getChildContracts()) {
+                if (!child.isActive()) continue;
+
+                ContractPaymentData data = child.getContractPaymentData();
+                int premium = data.getPremium();
+                if (premium <= 0) continue;
+
+                int payment = Math.min(amount, premium);
+                data.setOutstandingBalance(data.getOutstandingBalance() - payment);
+                amount -= payment;
+
+                if (amount == 0) break;
+            }
+
+            if (amount == initialAmount) break; // no progress made
+        }
+    }
+
+    /*
+    private void payForPremiums(MasterVehicleContract contract, int amount) {
+        while (amount > 0) {
             boolean fundsApplied = false;
 
             for (AbstractContract childContract : contract.getChildContracts()) {
@@ -105,6 +128,8 @@ public class PaymentHandler {
             if (!fundsApplied) break;
         }
     }
+
+     */
 
     private void recordPayment(AbstractContract contract, int amount) {
         LocalDateTime currentTime = insurer.getCurrentTime();

@@ -64,9 +64,17 @@ public abstract class AbstractContract {
         return coverageAmount;
     }
 
-    public abstract boolean isActive();
+    //public abstract boolean isActive();
 
-    public abstract void setInactive();
+    //public abstract void setInactive();
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setInactive() {
+        this.isActive = false;
+    }
 
     public void setCoverageAmount(int coverageAmount) {
         validateCoverageAmount(coverageAmount);

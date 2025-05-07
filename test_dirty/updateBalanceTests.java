@@ -102,6 +102,9 @@ public class updateBalanceTests {
         SingleVehicleContract childContract1 = new SingleVehicleContract(
                 "CH001", testInsurer, null, legalEntity, paymentData, 6000, vehicle1);
 
+        testInsurer.getContracts().add(parentContract);
+        testInsurer.getContracts().add(childContract1);
+
         // Add child contract
         parentContract.requestAdditionOfChildContract(childContract1);
 

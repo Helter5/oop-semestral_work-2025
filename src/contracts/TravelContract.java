@@ -4,6 +4,7 @@ import objects.Person;
 import java.util.Set;
 import company.InsuranceCompany;
 import payment.ContractPaymentData;
+import objects.LegalForm;
 
 import static objects.Person.isValidBirthNumber;
 
@@ -24,8 +25,13 @@ public class TravelContract extends AbstractContract {
             throw new IllegalArgumentException();
         }
 
+        //for (Person person : personsToInsure) {
+            //if(!isValidBirthNumber(person.getId())) {
+         //       throw new IllegalArgumentException();
+         //   }
+        //}
         for (Person person : personsToInsure) {
-            if(!isValidBirthNumber(person.getId())) {
+            if (person.getLegalForm() != LegalForm.NATURAL) {
                 throw new IllegalArgumentException();
             }
         }
@@ -38,6 +44,7 @@ public class TravelContract extends AbstractContract {
         return insuredPersons;
     }
 
+    /*
     @Override
     public boolean isActive() {
         return isActive;
@@ -47,4 +54,6 @@ public class TravelContract extends AbstractContract {
     public void setInactive() {
         this.isActive = false;
     }
+
+     */
 }

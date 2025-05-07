@@ -10,8 +10,8 @@ import contracts.AbstractContract;
 public class Person {
     final private String id;
     final private LegalForm legalForm;
-    private int paidOutAmount;
     final private Set<AbstractContract> contracts;
+    private int paidOutAmount;
 
     public Person(String id){
         if(id == null || id.isEmpty()) {
@@ -44,6 +44,15 @@ public class Person {
         return true;
     }
 
+    public static boolean isValidDate(int day, int month, int year) {
+        try {
+            LocalDate.of(year, month, day);
+        } catch (DateTimeException e) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isValidBirthNumber(String birthNumber) {
         if (!isStringNumber(birthNumber)) return false;
 
@@ -63,12 +72,6 @@ public class Person {
 
         year += (length == 9) ? 1900 : (year >= 54 ? 1900 : 2000);
 
-        try {
-            LocalDate.of(year, month, day);
-        } catch (DateTimeException e){
-            return false;
-        }
-
         if(length == 10) {
             int sum = 0;
             for (int i = 0; i < 10; i++) {
@@ -78,7 +81,7 @@ public class Person {
             return sum % 11 == 0;
         }
 
-        return true;
+        return isValidDate(day, month, year);
     }
 
     // IČO

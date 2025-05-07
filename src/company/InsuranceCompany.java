@@ -67,17 +67,22 @@ public class InsuranceCompany {
             throw new IllegalArgumentException("Contract with this number already exists");
         }
 
-        double totalPremiumValue = proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths());
-        double twoPercentOfOriginalValue = (int) (vehicleToInsure.getOriginalValue() * 0.02);
+        double totalPremiumValue = (int)(proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths()));
+        double twoPercentOfOriginalValue = (int)(vehicleToInsure.getOriginalValue() * 0.02);
+
         if ( totalPremiumValue < twoPercentOfOriginalValue) {
             throw new IllegalArgumentException();
         }
 
+        //ContractPaymentData newContractPaymentData = new ContractPaymentData(
+        //        proposedPremium, proposedPaymentFrequency, currentTime, proposedPremium
+        //);
+
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
-                proposedPremium, proposedPaymentFrequency, currentTime, proposedPremium
+                proposedPremium, proposedPaymentFrequency, currentTime, 0
         );
 
-        newContractPaymentData.updateNextPaymentTime();
+
 
         SingleVehicleContract newContract = new SingleVehicleContract(
                 contractNumber, this, beneficiary, policyHolder,
