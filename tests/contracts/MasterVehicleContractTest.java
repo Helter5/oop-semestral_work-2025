@@ -18,11 +18,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MasterVehicleContractTest {
 
-    private InsuranceCompany company;
-    private Person legalPerson;
-    private Person naturalPerson;
-    private Person beneficiary;
-    private Set<SingleVehicleContract> contracts;
+    InsuranceCompany company;
+    Person legalPerson;
+    Person naturalPerson;
+    Person beneficiary;
+    Vehicle vehicle1;
+    Vehicle vehicle2;
+    Vehicle vehicle3;
+    Vehicle vehicle4;
+    MasterVehicleContract masterContract;
+    SingleVehicleContract contract1;
+    SingleVehicleContract contract2;
+    SingleVehicleContract contract3;
+    SingleVehicleContract contract4;
 
     @BeforeEach
     void setUp() {
@@ -31,21 +39,25 @@ class MasterVehicleContractTest {
         naturalPerson = new Person("8004175146");
         beneficiary = new Person("8054176383");
 
-        // Create payment data for the single contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100,
-                PremiumPaymentFrequency.MONTHLY,
-                LocalDateTime.now(),
-                0);
-
         // Create a sample vehicle and single vehicle contract
-        Vehicle vehicle = new Vehicle("ABC1234", 10000);
-        SingleVehicleContract singleContract = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, vehicle);
+        vehicle1 = new Vehicle("ABC1234", 10000);
+        vehicle2 = new Vehicle("DEF4567", 12000);
+        vehicle3 = new Vehicle("GHI7890", 10000);
+        vehicle4 = new Vehicle("JKL1234", 12000);
 
-        contracts = new HashSet<>();
-        contracts.add(singleContract);
+        masterContract = company.createMasterVehicleContract("MC001", beneficiary, legalPerson);
+
+        // Create payment data for the single contract
+        contract1 = company.insureVehicle("SC001", beneficiary, legalPerson, 30, PremiumPaymentFrequency.MONTHLY, vehicle1);
+
+        // contract2 - premium 50, active, with outstanding balance 50
+        contract2 = company.insureVehicle("SC002", beneficiary, legalPerson, 50, PremiumPaymentFrequency.MONTHLY, vehicle2);
+
+        // contract3 - premium 75, active, with outstanding balance 100
+        contract3 = company.insureVehicle("SC003", beneficiary, legalPerson, 75, PremiumPaymentFrequency.MONTHLY, vehicle3);
+
+        // contract4 - premium 20, inactive, with outstanding balance 0
+        contract4 = company.insureVehicle("SC004", beneficiary, legalPerson, 20, PremiumPaymentFrequency.MONTHLY, vehicle4);
     }
 
     @Test
@@ -54,26 +66,17 @@ class MasterVehicleContractTest {
         assertEquals(LegalForm.LEGAL, legalPerson.getLegalForm());
         assertEquals(LegalForm.NATURAL, naturalPerson.getLegalForm());
 
-        // Test with legal person - should create successfully
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         assertEquals(legalPerson, masterContract.getPolicyHolder());
         assertEquals(LegalForm.LEGAL, masterContract.getPolicyHolder().getLegalForm());
 
         // Test with natural person - should throw exception
         assertThrows(IllegalArgumentException.class, () -> {
-            new MasterVehicleContract(
-                    "MC002", company, beneficiary, naturalPerson);
+            company.createMasterVehicleContract("MC002", beneficiary, naturalPerson);
         });
     }
 
     @Test
     void testDefaultPaymentDataAndCoverageAmount() {
-        // Create a master contract with a legal person
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // Verify that payment data is null and coverage amount is 0
         assertNull(masterContract.getContractPaymentData());
         assertEquals(0, masterContract.getCoverageAmount());
@@ -81,30 +84,9 @@ class MasterVehicleContractTest {
 
     @Test
     void testChildContractsInitialization() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // Verify that childContracts is initialized and empty
         assertNotNull(masterContract.getChildContracts());
         assertTrue(masterContract.getChildContracts().isEmpty());
-
-        // Add contracts and verify they maintain insertion order
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                new ContractPaymentData(100, PremiumPaymentFrequency.MONTHLY,
-                        LocalDateTime.now(), 0),
-                5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                new ContractPaymentData(200, PremiumPaymentFrequency.MONTHLY,
-                        LocalDateTime.now(), 0),
-                6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
 
         // Add contracts and verify order
         masterContract.requestAdditionOfChildContract(contract1);
@@ -118,28 +100,8 @@ class MasterVehicleContractTest {
 
     @Test
     void testIsActiveStatus() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // Initially with no child contracts
         assertTrue(masterContract.isActive()); // Master contract is active by default
-
-        // Create two SingleVehicleContracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
 
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
@@ -159,10 +121,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testIsActiveStatusWithNoChildren() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // Initially with no child contracts
         assertTrue(masterContract.isActive()); // Should be active by default
 
@@ -173,26 +131,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testIsActiveStatusWithChildren() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create two SingleVehicleContracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -211,26 +149,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testSetInactive() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create two SingleVehicleContracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -251,25 +169,8 @@ class MasterVehicleContractTest {
 
     @Test
     void testPayMethod() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create and add a child contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract childContract = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(childContract);
-
         // Add child contract to master contract
-        masterContract.requestAdditionOfChildContract(childContract);
-
-        // Add the contract to the insurance company
-        company.getContracts().add(masterContract);
+        masterContract.requestAdditionOfChildContract(contract1);
 
         // Initial validation
         assertTrue(company.getHandler().getPaymentHistory().isEmpty());
@@ -298,11 +199,8 @@ class MasterVehicleContractTest {
     @Test
     void testPayWithEmptyMasterContract() {
         // Create a master contract with no child contracts
-        MasterVehicleContract emptyMasterContract = new MasterVehicleContract(
-                "MC002", company, beneficiary, legalPerson);
-
-        // Add the contract to the insurance company
-        company.getContracts().add(emptyMasterContract);
+        MasterVehicleContract emptyMasterContract = company.createMasterVehicleContract(
+                "MC002", beneficiary, legalPerson);
 
         // Attempt to pay should throw InvalidContractException
         assertThrows(InvalidContractException.class, () -> emptyMasterContract.pay(100));
@@ -310,25 +208,8 @@ class MasterVehicleContractTest {
 
     @Test
     void testUpdateBalance() {
-        // Create a master contract with child contracts to avoid InvalidContractException
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create a single vehicle contract to add as a child
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract childContract = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(childContract);
-
         // Add the child contract to the master contract
-        masterContract.requestAdditionOfChildContract(childContract);
-
-        // Add the contract to the insurance company
-        company.getContracts().add(masterContract);
+        masterContract.requestAdditionOfChildContract(contract1);
 
         try {
             // Call updateBalance on the master contract
@@ -344,22 +225,7 @@ class MasterVehicleContractTest {
 
     @Test
     void testPayWithInactiveContract() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Add child contract to make it valid for payment
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract childContract = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(childContract);
-
-        masterContract.requestAdditionOfChildContract(childContract);
-        company.getContracts().add(masterContract);
+        masterContract.requestAdditionOfChildContract(contract1);
 
         // Make contract inactive
         masterContract.setInactive();
@@ -370,26 +236,15 @@ class MasterVehicleContractTest {
 
     @Test
     void testPayWithDifferentInsurer() {
-        // Create a contract with a different insurer
         InsuranceCompany differentCompany = new InsuranceCompany(LocalDateTime.now());
 
-        MasterVehicleContract foreignContract = new MasterVehicleContract(
-                "MC001", differentCompany, beneficiary, legalPerson);
+        MasterVehicleContract foreignContract = differentCompany.createMasterVehicleContract(
+                "MC001", beneficiary, legalPerson);
 
-        // Add child contract to make it valid for payment
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract childContract = new SingleVehicleContract(
-                "SC001", differentCompany, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
+        SingleVehicleContract contract = differentCompany.insureVehicle("SC001", beneficiary,
+                legalPerson, 30, PremiumPaymentFrequency.MONTHLY, vehicle1);
 
-        differentCompany.getContracts().add(foreignContract);
-        differentCompany.getContracts().add(childContract);
-
-        foreignContract.requestAdditionOfChildContract(childContract);
-
-        // Add the contract to the different company
-        differentCompany.getContracts().add(foreignContract);
+        foreignContract.requestAdditionOfChildContract(contract);
 
         // Try to pay using our company's handler - should throw exception
         assertThrows(InvalidContractException.class, () -> company.getHandler().pay(foreignContract, 100));
@@ -398,11 +253,8 @@ class MasterVehicleContractTest {
     @Test
     void testPayWithNoChildContracts() {
         // Create a master contract with no child contracts
-        MasterVehicleContract emptyMasterContract = new MasterVehicleContract(
-                "MC002", company, beneficiary, legalPerson);
-
-        // Add the contract to the insurance company
-        company.getContracts().add(emptyMasterContract);
+        MasterVehicleContract emptyMasterContract = company.createMasterVehicleContract(
+                "MC002", beneficiary, legalPerson);
 
         // Attempt to pay should throw InvalidContractException
         assertThrows(InvalidContractException.class, () -> emptyMasterContract.pay(100));
@@ -417,48 +269,22 @@ class MasterVehicleContractTest {
 
     @Test
     void testAbstractContractPayWithZeroAmount() {
-        // Create a contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
-        SingleVehicleContract contract = new SingleVehicleContract(
-                "SC001", company, beneficiary, naturalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(contract);
-
         // Test with zero amount
-        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract, 0));
+        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract1, 0));
     }
 
     @Test
     void testAbstractContractPayWithNegativeAmount() {
-        // Create a contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
-        SingleVehicleContract contract = new SingleVehicleContract(
-                "SC001", company, beneficiary, naturalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(contract);
-
         // Test with negative amount
-        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract, -100));
+        assertThrows(IllegalArgumentException.class, () -> company.getHandler().pay(contract1, -100));
     }
 
     @Test
     void testAbstractContractPayWithInactiveContract() {
-        // Create a contract and make it inactive
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
-        SingleVehicleContract contract = new SingleVehicleContract(
-                "SC001", company, beneficiary, naturalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(contract);
-        contract.setInactive();
+        contract1.setInactive();
 
         // Test with inactive contract
-        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(contract, 100));
+        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(contract1, 100));
     }
 
     @Test
@@ -466,28 +292,14 @@ class MasterVehicleContractTest {
         // Create a contract with different insurer
         InsuranceCompany differentCompany = new InsuranceCompany(LocalDateTime.now());
 
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
-        SingleVehicleContract contract = new SingleVehicleContract(
-                "SC001", differentCompany, beneficiary, naturalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        differentCompany.getContracts().add(contract);
-
         // Test with contract from different insurer
-        assertThrows(InvalidContractException.class, () -> company.getHandler().pay(contract, 100));
+        assertThrows(InvalidContractException.class, () -> differentCompany.getHandler().pay(contract1, 100));
     }
 
     @Test
     void testAbstractContractPaySuccessfully() {
-        // Create a contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 200);
-        SingleVehicleContract contract = new SingleVehicleContract(
-                "SC001", company, beneficiary, naturalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(contract);
+        SingleVehicleContract contract = company.insureVehicle("SC00X", beneficiary, legalPerson,
+                200, PremiumPaymentFrequency.MONTHLY, vehicle1);
 
         // Initial state
         assertEquals(200, contract.getContractPaymentData().getOutstandingBalance());
@@ -509,27 +321,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testSetInactiveCorrectImplementation() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create two SingleVehicleContracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
-
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -565,26 +356,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testSetInactiveOnMasterContract() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create child contracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -616,26 +387,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testMasterContractIsInactiveWhenAllChildrenAreInactive() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create child contracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF4567", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -660,55 +411,31 @@ class MasterVehicleContractTest {
 
     @Test
     void testMasterContractActivationWithSingleInactiveChild() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // Initially master contract should be active
         assertTrue(masterContract.isActive());
 
-        // Create and add a single child contract
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract childContract = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(childContract);
-
-        masterContract.requestAdditionOfChildContract(childContract);
+        masterContract.requestAdditionOfChildContract(contract1);
 
         // Both contracts should be active initially
         assertTrue(masterContract.isActive());
-        assertTrue(childContract.isActive());
+        assertTrue(contract1.isActive());
 
         // Set child contract inactive
-        childContract.setInactive();
+        contract1.setInactive();
 
         // Verify child is inactive
-        assertFalse(childContract.isActive());
+        assertFalse(contract1.isActive());
 
         // Verify that master contract's isActive() returns false
         // when all children are inactive (in this case, the only child)
         assertFalse(masterContract.isActive());
 
-
-        SingleVehicleContract childContract2 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1245", 10000));
-
-        SingleVehicleContract childContract3 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1256", 10000));
-
-        MasterVehicleContract masterContract2 = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
+        MasterVehicleContract masterContract2 = company.createMasterVehicleContract(
+                "MC002", beneficiary, legalPerson);
 
         assertTrue(masterContract2.isActive());
-        assertTrue(childContract2.isActive());
-        assertTrue(childContract3.isActive());
-
+        assertTrue(contract2.isActive());
+        assertTrue(contract3.isActive());
 
         masterContract2.setInactive();
         assertFalse(masterContract2.isActive());
@@ -716,10 +443,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testNoChildContractsIsActiveDependsOnField() {
-        // Create a master contract with no children
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
         // By default, a new contract should have isActive field set to true
         assertTrue(masterContract.isActive());
 
@@ -761,26 +484,6 @@ class MasterVehicleContractTest {
 
     @Test
     void testWithChildContractsIsActiveIgnoresField() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Create child contracts
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData, 5000, new Vehicle("ABC1234", 10000));
-
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData, 6000, new Vehicle("DEF5678", 12000));
-
-        company.getContracts().add(masterContract);
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-
         // Add children to master contract
         masterContract.requestAdditionOfChildContract(contract1);
         masterContract.requestAdditionOfChildContract(contract2);
@@ -836,46 +539,10 @@ class MasterVehicleContractTest {
 
     @Test
     void testPayFromExample() {
-        // Create a master contract
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", company, beneficiary, legalPerson);
-
-        // Add the contract to the insurance company
-        company.getContracts().add(masterContract);
-
-        // Create four child contracts as specified in the example
-        // contract1 - premium 30, active, with outstanding balance 30
-        ContractPaymentData paymentData1 = new ContractPaymentData(
-                30, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 30);
-        SingleVehicleContract contract1 = new SingleVehicleContract(
-                "SC001", company, beneficiary, legalPerson,
-                paymentData1, 5000, new Vehicle("ABC1234", 10000));
-
-        // contract2 - premium 50, active, with outstanding balance 50
-        ContractPaymentData paymentData2 = new ContractPaymentData(
-                50, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 50);
-        SingleVehicleContract contract2 = new SingleVehicleContract(
-                "SC002", company, beneficiary, legalPerson,
-                paymentData2, 6000, new Vehicle("DEF5678", 12000));
-
-        // contract3 - premium 75, active, with outstanding balance 100
-        ContractPaymentData paymentData3 = new ContractPaymentData(
-                75, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 100);
-        SingleVehicleContract contract3 = new SingleVehicleContract(
-                "SC003", company, beneficiary, legalPerson,
-                paymentData3, 5000, new Vehicle("GHI9012", 10000));
-
-        // contract4 - premium 20, inactive, with outstanding balance 0
-        ContractPaymentData paymentData4 = new ContractPaymentData(
-                20, PremiumPaymentFrequency.MONTHLY, LocalDateTime.now(), 0);
-        SingleVehicleContract contract4 = new SingleVehicleContract(
-                "SC004", company, beneficiary, legalPerson,
-                paymentData4, 6000, new Vehicle("JKL3456", 12000));
-
-        company.getContracts().add(contract1);
-        company.getContracts().add(contract2);
-        company.getContracts().add(contract3);
-        company.getContracts().add(contract4);
+        contract1.getContractPaymentData().setOutstandingBalance(30);
+        contract2.getContractPaymentData().setOutstandingBalance(50);
+        contract3.getContractPaymentData().setOutstandingBalance(100);
+        contract4.getContractPaymentData().setOutstandingBalance(0);
 
         // Add contracts to master contract
         masterContract.requestAdditionOfChildContract(contract1);
@@ -913,5 +580,36 @@ class MasterVehicleContractTest {
         assertEquals(-85, contract2.getContractPaymentData().getOutstandingBalance()); // Overpaid by 85
         assertEquals(-75, contract3.getContractPaymentData().getOutstandingBalance()); // Overpaid by 75
         assertEquals(0, contract4.getContractPaymentData().getOutstandingBalance());   // Inactive, unchanged
+    }
+
+    @Test
+    void testMoveSingleVehicleContractIsInContracts() {
+        contract1.getPolicyHolder().getContracts().remove(masterContract);
+        assertThrows(InvalidContractException.class, () -> {
+            // Master Contract not in policy holder's contracts'
+            company.moveSingleVehicleContractToMasterVehicleContract(masterContract, contract1);}
+        );
+
+        contract1.getPolicyHolder().getContracts().add(masterContract);
+        contract1.getPolicyHolder().getContracts().remove(contract1);
+        assertThrows(InvalidContractException.class, () -> {
+            // Single Contract not in policy holder's contracts'
+            company.moveSingleVehicleContractToMasterVehicleContract(masterContract, contract1);}
+        );
+        contract1.getPolicyHolder().getContracts().add(contract1);
+
+        company.getContracts().remove(masterContract);
+        assertThrows(InvalidContractException.class, () -> {
+            // Master Contract not in company's contracts'
+            company.moveSingleVehicleContractToMasterVehicleContract(masterContract, contract1);}
+        );
+
+        company.getContracts().add(masterContract);
+        company.getContracts().remove(contract1);
+        assertThrows(InvalidContractException.class, () -> {
+            // Single Contract not in company's contracts'
+            company.moveSingleVehicleContractToMasterVehicleContract(masterContract, contract1);}
+        );
+
     }
 }

@@ -67,16 +67,12 @@ public class InsuranceCompany {
             throw new IllegalArgumentException("Contract with this number already exists");
         }
 
-        double totalPremiumValue = (int)(proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths()));
-        double twoPercentOfOriginalValue = (int)(vehicleToInsure.getOriginalValue() * 0.02);
+        int totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
+        int twoPercentOfOriginalValue = (int)(vehicleToInsure.getOriginalValue() * 0.02);
 
         if ( totalPremiumValue < twoPercentOfOriginalValue) {
             throw new IllegalArgumentException();
         }
-
-        //ContractPaymentData newContractPaymentData = new ContractPaymentData(
-        //        proposedPremium, proposedPaymentFrequency, currentTime, proposedPremium
-        //);
 
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
                 proposedPremium, proposedPaymentFrequency, currentTime, 0
@@ -106,7 +102,7 @@ public class InsuranceCompany {
             throw new IllegalArgumentException();
         }
 
-        double totalPremiumValue = (int)(proposedPremium * (12.0 / proposedPaymentFrequency.getValueInMonths()));
+        int totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
         if (totalPremiumValue < (5 * personsToInsure.size())) {
             throw new IllegalArgumentException();
         }
@@ -181,7 +177,7 @@ public class InsuranceCompany {
     }
 
     public void chargePremiumOnContract(MasterVehicleContract contract) {
-        for (AbstractVehicleContract childContract : contract.getChildContracts()) {
+        for (SingleVehicleContract childContract : contract.getChildContracts()) {
             chargePremiumOnContract(childContract);
         }
     }

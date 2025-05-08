@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class updateBalanceTests {
 
-    private Person legalEntity;
-    private Vehicle vehicle1;
-    private LocalDateTime testTime;
+    Person legalEntity;
+    Vehicle vehicle1;
+    LocalDateTime testTime;
 
     @BeforeEach
     void setUp() {
@@ -62,11 +62,8 @@ public class updateBalanceTests {
         Person legalEntity = new Person("123456");
 
         // Test case 1: SingleVehicleContract should call the general method
-        ContractPaymentData paymentData = new ContractPaymentData(
-                100, PremiumPaymentFrequency.MONTHLY, testInsurer.getCurrentTime(), 0);
-        SingleVehicleContract singleContract = new SingleVehicleContract(
-                "SV001", testInsurer, null, legalEntity,
-                paymentData, 5000, vehicle1);
+        SingleVehicleContract singleContract = testInsurer.insureVehicle("SV001", null,
+                legalEntity, 100, PremiumPaymentFrequency.MONTHLY, vehicle1);
 
         // Reset tracking and call updateBalance
         testInsurer.resetTracking();
@@ -81,8 +78,7 @@ public class updateBalanceTests {
                 "The single contract should be passed to the method");
 
         // Test case 2: MasterVehicleContract should call the specialized method
-        MasterVehicleContract masterContract = new MasterVehicleContract(
-                "MC001", testInsurer, null, legalEntity);
+        MasterVehicleContract masterContract = testInsurer.createMasterVehicleContract("MC001", null, legalEntity);
 
         // Reset tracking and call updateBalance
         testInsurer.resetTracking();
@@ -97,13 +93,9 @@ public class updateBalanceTests {
                 "The master contract should be passed to the method");
 
         // Test case 3: Create a MasterVehicleContract with child contracts
-        MasterVehicleContract parentContract = new MasterVehicleContract(
-                "MC002", testInsurer, null, legalEntity);
-        SingleVehicleContract childContract1 = new SingleVehicleContract(
-                "CH001", testInsurer, null, legalEntity, paymentData, 6000, vehicle1);
-
-        testInsurer.getContracts().add(parentContract);
-        testInsurer.getContracts().add(childContract1);
+        MasterVehicleContract parentContract = testInsurer.createMasterVehicleContract("MC002", null, legalEntity);
+        SingleVehicleContract childContract1 = testInsurer.insureVehicle("CH001", null,
+                legalEntity, 100, PremiumPaymentFrequency.MONTHLY, vehicle1);
 
         // Add child contract
         parentContract.requestAdditionOfChildContract(childContract1);

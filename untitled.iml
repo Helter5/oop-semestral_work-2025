@@ -16,6 +16,9 @@
       <sourceFolder url="file://$MODULE_DIR$/test_dirty/objects" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test_dirty/payment" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test_dirty/structure" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/random_testy" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test_functions" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
