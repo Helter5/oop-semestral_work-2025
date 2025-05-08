@@ -152,4 +152,50 @@ public class VehicleTest {
         // assertNotNull(zeroException.getMessage());
         // assertTrue(zeroException.getMessage().contains("positive"));
     }
+
+    @Test
+    void testInvalidVehicleNames() {
+        // Empty or whitespace-only names
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("       ", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("\n", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("\t", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("\r", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle(" \n\t\r ", 15));
+
+        // Names consisting of only digits (1-6 characters)
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("1", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("12", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("123", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("1234", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("12345", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("123456", 15));
+
+        // Names with digits and whitespace
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("1234567\n", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("1234567\t", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("123 456", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("123\n456", 15));
+
+        // Names starting with digits
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("1Car", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("123Car", 15));
+
+        // Names with special characters (if not allowed)
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Car@", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Car#123", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Car$", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Car%", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Car&", 15));
+
+        // Names with length issues (if there are min/max requirements)
+        // Assuming minimum length > 0 and maximum length validation exists
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("A", 15)); // Too short if min > 1
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("ThisVehicleNameIsTooLongForTheValidationRequirements", 15)); // Too long
+
+        // Unicode characters (if not allowed)
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("Véhicule", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("汽车", 15));
+        assertThrows(IllegalArgumentException.class, () -> new Vehicle("автомобиль", 15));
+    }
 }

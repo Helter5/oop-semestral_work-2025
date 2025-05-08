@@ -1,15 +1,14 @@
 package payment;
 
 public enum PremiumPaymentFrequency {
-    ANNUAL(12), SEMI_ANNUAL(6), QUARTERLY(3), MONTHLY(1);
-
-    private final int months;
-
-    PremiumPaymentFrequency(int months) {
-        this.months = months;
-    }
+    ANNUAL, SEMI_ANNUAL, QUARTERLY, MONTHLY;
 
     public int getValueInMonths() {
-        return months;
+        return switch (this) {
+            case ANNUAL -> 12;
+            case SEMI_ANNUAL -> 6;
+            case QUARTERLY -> 3;
+            case MONTHLY -> 1;
+        };
     }
 }
