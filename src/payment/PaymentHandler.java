@@ -14,7 +14,7 @@ public class PaymentHandler {
     private final InsuranceCompany insurer;
 
     public PaymentHandler(InsuranceCompany insurer) {
-        if (insurer == null) throw new IllegalArgumentException();
+        if (insurer == null) throw new IllegalArgumentException("Insurer can not be null");
 
         this.insurer = insurer;
         this.paymentHistory = new HashMap<>();
@@ -26,7 +26,7 @@ public class PaymentHandler {
 
     public void pay(MasterVehicleContract contract, int amount) {
         validateContractAndAmount(contract, amount);
-        if (contract.getChildContracts().isEmpty()) throw new InvalidContractException("contract exception");
+        if (contract.getChildContracts().isEmpty()) throw new InvalidContractException("Contract has no child contracts");
 
         int remainingAmount = payOffOutstandingBalance(contract, amount);
         payForPremiums(contract, remainingAmount);
@@ -47,10 +47,13 @@ public class PaymentHandler {
     @ help methods
      */
     private void validateContractAndAmount(AbstractContract contract, int amount) {
-        if (contract == null) throw new IllegalArgumentException();
-        if (amount <= 0) throw new IllegalArgumentException();
-        if (!contract.isActive() || !contract.getInsurer().equals(insurer)) {
-            throw new InvalidContractException("contract exception");
+        if (contract == null) throw new IllegalArgumentException("Contract can not be null");
+        if (amount <= 0) throw new IllegalArgumentException("Amount is not positive");
+        if (!contract.isActive()) {
+            throw new InvalidContractException("Contract is not active");
+        }
+        if (!contract.getInsurer().equals(insurer)) {
+            throw new InvalidContractException("Contract does not belong to this insurer");
         }
     }
 

@@ -5,9 +5,9 @@ public class Vehicle {
     private final int originalValue;
 
     public Vehicle(String licensePlate, int originalValue){
-        if (licensePlate == null) throw new IllegalArgumentException();
-        if (licensePlate.length() != 7) throw new IllegalArgumentException();
-        if (originalValue <= 0) throw new IllegalArgumentException();
+        if (licensePlate == null) throw new IllegalArgumentException("License plate cannot be null");
+        if (licensePlate.length() != 7) throw new IllegalArgumentException("License plate must be 7 characters long");
+        if (originalValue <= 0) throw new IllegalArgumentException("Original value must be greater than 0");
 
         boolean isValid = true;
         for (int i=0; i<licensePlate.length(); i++) {
@@ -17,7 +17,7 @@ public class Vehicle {
                 break;
             }
         }
-        if (!isValid) throw new IllegalArgumentException();
+        if (!isValid) throw new IllegalArgumentException("License plate can only contain uppercase letters and digits");
 
         this.licensePlate = licensePlate;
         this.originalValue = originalValue;

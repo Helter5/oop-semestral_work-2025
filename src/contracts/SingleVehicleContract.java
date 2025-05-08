@@ -17,11 +17,11 @@ public class SingleVehicleContract extends AbstractVehicleContract {
         super(contractNumber, insurer, beneficiary, policyHolder, contractPaymentData, coverageAmount);
 
         if (vehicleToInsure == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Vehicle to insure cannot be null.");
         }
 
         if (contractPaymentData == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Contract payment data cannot be null.");
         }
 
         this.insuredVehicle = vehicleToInsure;

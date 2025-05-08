@@ -15,7 +15,7 @@ public class Person {
 
     public Person(String id){
         if(id == null || id.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("ID cannot be null or empty");
         }
 
         if (isValidBirthNumber(id)) {
@@ -23,7 +23,7 @@ public class Person {
         } else if (isValidRegistrationNumber(id)) {
             this.legalForm = LegalForm.LEGAL;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid ID format");
         }
 
         this.id = id;
@@ -111,12 +111,12 @@ public class Person {
     }
 
     public void addContract(AbstractContract contract){
-        if (contract == null) throw new IllegalArgumentException();
+        if (contract == null) throw new IllegalArgumentException("Contract cannot be null");
         contracts.add(contract);
     }
 
     public void payout(int paidOutAmount){
-        if (paidOutAmount <= 0) throw new IllegalArgumentException();
+        if (paidOutAmount <= 0) throw new IllegalArgumentException("Paid out amount must be positive");
         this.paidOutAmount += paidOutAmount;
     }
 

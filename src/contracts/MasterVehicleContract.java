@@ -20,7 +20,7 @@ public class MasterVehicleContract extends AbstractVehicleContract {
 
     private void validatePolicyHolderLegalForm(Person policyHolder) {
         if (policyHolder.getLegalForm() != LegalForm.LEGAL) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Policy holder must be a legal entity.");
         }
     }
 

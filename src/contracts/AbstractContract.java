@@ -19,8 +19,8 @@ public abstract class AbstractContract {
                             Person policyHolder, ContractPaymentData contractPaymentData,
                             int coverageAmount)
     {
-        if (insurer == null) throw new IllegalArgumentException();
-        if (policyHolder == null) throw new IllegalArgumentException();
+        if (insurer == null) throw new IllegalArgumentException("Insurance company cannot be null");
+        if (policyHolder == null) throw new IllegalArgumentException("Policy holder cannot be null");
 
         //if (contractPaymentData == null) {
         //    throw new IllegalArgumentException();
@@ -36,14 +36,14 @@ public abstract class AbstractContract {
 
     private String validateContractNumber(String contractNumber) {
         if (contractNumber == null || contractNumber.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Contract number cannot be null or empty");
         }
         return contractNumber;
     }
 
     private int validateCoverageAmount(int coverageAmount) {
         if (coverageAmount < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Coverage amount cannot be negative");
         }
         return coverageAmount;
     }

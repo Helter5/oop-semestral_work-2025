@@ -19,7 +19,7 @@ public abstract class AbstractVehicleContract extends AbstractContract {
 
     private void validateBeneficiary(Person beneficiary) {
         if (beneficiary != null && beneficiary.equals(policyHolder)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Beneficiary cannot be the same as policy holder.");
         }
     }
 

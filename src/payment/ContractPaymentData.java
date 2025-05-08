@@ -59,14 +59,14 @@ public class ContractPaymentData {
     @ opakujuce sa podmienky
      */
     private void validatePremium(int premium) {
-        if (premium <= 0) throw new IllegalArgumentException();
+        if (premium <= 0) throw new IllegalArgumentException("Premium must be greater than 0");
     }
 
     private void validatePremiumPaymentFrequency(PremiumPaymentFrequency premiumPaymentFrequency) {
-        if (premiumPaymentFrequency == null) throw new IllegalArgumentException();
+        if (premiumPaymentFrequency == null) throw new IllegalArgumentException("Premium payment frequency cannot be null");
     }
 
     private void validateNextPaymentTime(LocalDateTime nextPaymentTime) {
-        if (nextPaymentTime == null) throw new IllegalArgumentException();
+        if (nextPaymentTime == null) throw new IllegalArgumentException("Next payment time cannot be null");
     }
 }

@@ -18,11 +18,11 @@ public class TravelContract extends AbstractContract {
         super(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
 
         if (personsToInsure == null || personsToInsure.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Persons to insure cannot be null or empty");
         }
 
         if (contractPaymentData == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Contract payment data cannot be null");
         }
 
         //for (Person person : personsToInsure) {
@@ -32,7 +32,7 @@ public class TravelContract extends AbstractContract {
         //}
         for (Person person : personsToInsure) {
             if (person.getLegalForm() != LegalForm.NATURAL) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("All insured persons must be natural persons");
             }
         }
 
