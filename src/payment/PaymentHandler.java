@@ -103,37 +103,6 @@ public class PaymentHandler {
         }
     }
 
-    /*
-    private void payForPremiums(MasterVehicleContract contract, int amount) {
-        while (amount > 0) {
-            boolean fundsApplied = false;
-
-            for (AbstractContract childContract : contract.getChildContracts()) {
-                if (!childContract.isActive()) continue;
-
-                ContractPaymentData contractPaymentData = childContract.getContractPaymentData();
-                int premium = contractPaymentData.getPremium();
-
-                if (premium <= 0) continue;
-
-                if (amount >= premium) {
-                    contractPaymentData.setOutstandingBalance(contractPaymentData.getOutstandingBalance() - premium);
-                    amount -= premium;
-                    fundsApplied = true;
-                } else {
-                    contractPaymentData.setOutstandingBalance(contractPaymentData.getOutstandingBalance() - amount);
-                    amount = 0;
-                    fundsApplied = true;
-                    break;
-                }
-            }
-
-            if (!fundsApplied) break;
-        }
-    }
-
-     */
-
     private void recordPayment(AbstractContract contract, int amount) {
         LocalDateTime currentTime = insurer.getCurrentTime();
         PaymentInstance paymentInstance = new PaymentInstance(currentTime, amount);

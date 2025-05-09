@@ -6,8 +6,6 @@ import company.InsuranceCompany;
 import payment.ContractPaymentData;
 import objects.LegalForm;
 
-import static objects.Person.isValidBirthNumber;
-
 public class TravelContract extends AbstractContract {
     private final Set<Person> insuredPersons;
 
@@ -30,6 +28,7 @@ public class TravelContract extends AbstractContract {
          //       throw new IllegalArgumentException();
          //   }
         //}
+
         for (Person person : personsToInsure) {
             if (person.getLegalForm() != LegalForm.NATURAL) {
                 throw new IllegalArgumentException("All insured persons must be natural persons");

@@ -10,8 +10,8 @@ import contracts.AbstractContract;
 public class Person {
     private final String id;
     private final LegalForm legalForm;
-    private final Set<AbstractContract> contracts;
     private int paidOutAmount;
+    private final Set<AbstractContract> contracts;
 
     public Person(String id){
         if(id == null || id.isEmpty()) {

@@ -76,16 +76,15 @@ public class InsuranceCompany {
         }
 
         int totalPremiumValue = proposedPremium * (12 / proposedPaymentFrequency.getValueInMonths());
-        int twoPercentOfOriginalValue = (int)(vehicleToInsure.getOriginalValue() * 0.02);
+        int twoPercentOfOriginalValue = (int) (vehicleToInsure.getOriginalValue() * 0.02);
 
-        if ( totalPremiumValue < twoPercentOfOriginalValue) {
+        if (totalPremiumValue < twoPercentOfOriginalValue) {
             throw new IllegalArgumentException("Total premium value must be at least 2% of the vehicle's original value");
         }
 
         ContractPaymentData newContractPaymentData = new ContractPaymentData(
                 proposedPremium, proposedPaymentFrequency, currentTime, 0
         );
-
 
 
         SingleVehicleContract newContract = new SingleVehicleContract(
@@ -171,10 +170,12 @@ public class InsuranceCompany {
             throw new InvalidContractException("The policy holders of the contracts do not match");
         }
 
-        if(!this.contracts.contains(singleVehicleContract) ||
-                !singleVehicleContract.getPolicyHolder().getContracts().contains(singleVehicleContract) ||
-                !this.contracts.contains(masterVehicleContract) ||
-                !masterVehicleContract.getPolicyHolder().getContracts().contains(masterVehicleContract)){
+        if (!this.contracts.contains(singleVehicleContract) || !this.contracts.contains(masterVehicleContract)) {
+            throw new InvalidContractException("One of the contracts does not belong to this insurer");
+        }
+
+        if (!singleVehicleContract.getPolicyHolder().getContracts().contains(singleVehicleContract) ||
+                !masterVehicleContract.getPolicyHolder().getContracts().contains(masterVehicleContract)) {
             throw new InvalidContractException("One of the contracts does not belong to this insurer");
         }
 
@@ -223,7 +224,7 @@ public class InsuranceCompany {
             throw new InvalidContractException("Travel contract is not active");
         }
 
-        int totalClaimAmount =  travelContract.getCoverageAmount() / affectedPersons.size();
+        int totalClaimAmount = travelContract.getCoverageAmount() / affectedPersons.size();
         for (Person person : affectedPersons) {
             person.payout(totalClaimAmount);
         }
@@ -252,7 +253,7 @@ public class InsuranceCompany {
         }
         payoutTarget.payout(payoutAmount);
 
-        if (expectedDamages >= (int)(0.7 * singleVehicleContract.getInsuredVehicle().getOriginalValue())) {
+        if (expectedDamages >= (int) (0.7 * singleVehicleContract.getInsuredVehicle().getOriginalValue())) {
             singleVehicleContract.setInactive();
         }
     }

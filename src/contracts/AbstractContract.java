@@ -60,10 +60,6 @@ public abstract class AbstractContract {
         return coverageAmount;
     }
 
-    //public abstract boolean isActive();
-
-    //public abstract void setInactive();
-
     public boolean isActive() {
         return isActive;
     }

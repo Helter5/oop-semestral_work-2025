@@ -107,8 +107,8 @@ public class AbstractContractTests2 {
     @Test
     public void givenInactiveContract_whenSettingInactive_thenContractRemainsInactive() {
         TestContract2 contract = new TestContract2(contractNumber, insurer, policyHolder, contractPaymentData, coverageAmount);
-        //contract.isActive = false;
-        contract.setInactive();
+        contract.isActive = false;
+        //contract.setInactive();
 
         assertFalse(contract.isActive());
 

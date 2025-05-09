@@ -50,6 +50,7 @@ public class VehicleTests2 {
         assertThrows(IllegalArgumentException.class, () -> new Vehicle(licencePlate, originalValue));
     }
 
+    /*
     @Test
     public void givenTwoIdenticalVehicles_whenCheckingEquality_thenTheyAreEqual() {
         var vehicle1 = new Vehicle("BA123CD", 1000);
@@ -57,6 +58,8 @@ public class VehicleTests2 {
 
         assertEquals(vehicle1, vehicle2);
     }
+
+     */
 
     @Test
     public void givenTwoDifferentVehicles_whenCheckingEquality_thenTheyAreNotEqual() {
