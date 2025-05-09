@@ -22,10 +22,6 @@ public abstract class AbstractContract {
         if (insurer == null) throw new IllegalArgumentException("Insurance company cannot be null");
         if (policyHolder == null) throw new IllegalArgumentException("Policy holder cannot be null");
 
-        //if (contractPaymentData == null) {
-        //    throw new IllegalArgumentException();
-        //}
-
         this.contractNumber = validateContractNumber(contractNumber);
         this.insurer = insurer;
         this.policyHolder = policyHolder;
@@ -85,7 +81,6 @@ public abstract class AbstractContract {
         return contractPaymentData;
     }
 
-    /* to do */
     public void pay(int amount) {
         PaymentHandler paymentHandler = insurer.getHandler();
         paymentHandler.pay(this, amount);

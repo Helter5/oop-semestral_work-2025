@@ -33,8 +33,6 @@ public class Vehicle {
         return originalValue;
     }
 
-
-
     /*
     @Override
     public boolean equals(Object o) {
