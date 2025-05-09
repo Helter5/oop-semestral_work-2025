@@ -19,6 +19,8 @@
       <sourceFolder url="file://$MODULE_DIR$/random_testy" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test_functions" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests_v" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests_vlad" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

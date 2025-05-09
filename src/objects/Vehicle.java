@@ -1,5 +1,7 @@
 package objects;
 
+import java.util.Objects;
+
 public class Vehicle {
     private final String licensePlate;
     private final int originalValue;
@@ -30,17 +32,20 @@ public class Vehicle {
     public int getOriginalValue(){
         return originalValue;
     }
+
+
+
     /*
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (!(o instanceof Vehicle vehicle)) return false;
-        return Objects.(licensePlate, vehicle.licensePlate);
+        return Objects.equals(licensePlate, vehicle.licensePlate) &&
+               Objects.equals(originalValue, vehicle.originalValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(licensePlate);
+        return Objects.hash(licensePlate, originalValue);
     }
      */
 }
