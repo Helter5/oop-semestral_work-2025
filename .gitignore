@@ -33,3 +33,8 @@ bin/
 
 ### untitled.iml ###
 untitled.iml
+
+.idea
+.idea/*.xml
+.qodo
+.out/
