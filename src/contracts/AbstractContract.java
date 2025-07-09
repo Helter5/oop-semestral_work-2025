@@ -72,7 +72,7 @@ public abstract class AbstractContract {
         validateCoverageAmount(coverageAmount);
         this.coverageAmount = coverageAmount;
     }
-
+    //
     public ContractPaymentData getContractPaymentData() {
         return contractPaymentData;
     }
