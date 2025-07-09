@@ -38,3 +38,4 @@ untitled.iml
 .idea/*.xml
 .qodo
 .out/
+.gitignore
